@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GasDigital - Pakar Web App LMS</title>
+    <title>EduDigital - Pakar Web App LMS</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjo68a3Zq9-dVrU2yTnbBN_ZegMm-WB5UvFkHct39D4Okxm2-m8zR3agwRqR5U5f6hhQjlOQBslenaIkcUEcwTHrfkjscQL0cKb0HOVSsGPvsgbzeGjaB8A18fF0s1YhBHXv3ojZsEH81eYGb5e_FTzw8iUJ5ItuLV5wU5b1oOV4qfPiU_VYd_IpUCxCK0m/s320/Pakar%20Web%20App%20&%20GAS%20Database%20oke.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -114,7 +116,7 @@
                 <!-- Logo -->
                 <a href="#home" class="flex items-center cursor-pointer">
                     <i class="fas fa-graduation-cap text-blue-600 text-3xl mr-2"></i>
-                    <span class="font-bold text-xl tracking-tight text-gray-900">GasDigital</span>
+                    <span class="font-bold text-xl tracking-tight text-gray-900">EduDigital</span>
                 </a>
 
                 <!-- Desktop Public Nav (Sembunyi saat Login) -->
@@ -174,7 +176,7 @@
             <!-- GLOBAL FOOTER -->
             <footer id="global-footer" class="bg-white border-t border-gray-200 mt-auto">
                 <div class="max-w-7xl mx-auto py-6 px-4 text-center text-gray-500 text-sm">
-                    &copy; <span id="year"></span> GasDigital LMS. Hak Cipta Dilindungi.
+                    &copy; <span id="year"></span> EduDigital LMS. Hak Cipta Dilindungi.
                 </div>
             </footer>
         </main>
@@ -263,7 +265,7 @@
         let currentMenu = 'home';
 
         let appData = {
-            courses: [], live: [], tools: [], templates: [], market: [], faq: [], users: []
+            courses: [], live: [], tools: [], templates: [], market: [], users: []
         };
 
         const dashboardMenus = [
@@ -272,8 +274,7 @@
             { id: 'live', icon: 'fa-satellite-dish', label: 'Live' },
             { id: 'tools', icon: 'fa-wrench', label: 'Tools' },
             { id: 'templates', icon: 'fa-file-code', label: 'Templates' },
-            { id: 'market', icon: 'fa-store', label: 'Market' },
-            { id: 'faq', icon: 'fa-question-circle', label: 'FAQ Data' },
+            { id: 'market', icon: 'fa-store', label: 'Market' }
         ];
 
         const schema = {
@@ -306,10 +307,6 @@
                 { key: 'description', label: 'Deskripsi', type: 'textarea' },
                 { key: 'buy_link', label: 'Link Checkout', type: 'text' },
                 { key: 'image_url', label: 'URL Gambar Produk', type: 'text' },
-            ],
-            faq: [
-                { key: 'question', label: 'Pertanyaan', type: 'textarea' },
-                { key: 'answer', label: 'Jawaban', type: 'textarea' },
             ]
         };
 
@@ -324,7 +321,6 @@
                 appData.courses = [{ id: 'c1', title: 'Mastering Apps Script', description: 'Belajar membuat backend tanpa server.', thumbnail_url: 'https://placehold.co/600x400/2563eb/white?text=Apps+Script', content_url: '#' }];
                 appData.live = [{ id: 'l1', topic: 'Q&A Web App Development', date_time: 'Besok, 19:30 WIB', meeting_link: '#' }];
                 appData.tools = [{ id: 't1', tool_name: 'CSS Generator', description: 'Buat bayangan kotak dengan mudah', access_link: '#', icon_url: 'https://placehold.co/100/10b981/white?text=CSS' }];
-                appData.faq = [{ id: 'f1', question: 'Apakah ini gratis?', answer: 'Tersedia paket gratis dan berbayar.' }];
 
                 const localMock = localStorage.getItem('mockAppData');
                 if (localMock) appData = JSON.parse(localMock);
@@ -420,18 +416,8 @@
         function renderPublicContent() {
             const content = document.getElementById('main-content');
 
-            // Siapkan template HTML untuk List FAQ
-            let faqHtml = '';
-            appData.faq.forEach(f => {
-                faqHtml += `<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition"><h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>${f.question}</span></h4><p class="text-gray-600 mt-3 ml-8 leading-relaxed">${f.answer}</p></div>`;
-            });
-
-            // JIKA HALAMAN PUBLIK SUDAH DI-RENDER, KITA HANYA UPDATE BAGIAN FAQ SAJA (Agar tidak merusak scroll)
+            // JIKA HALAMAN PUBLIK SUDAH DI-RENDER, KITA TIDAK PERLU RE-RENDER
             if (content.querySelector('#public-landing-page')) {
-                const faqContainer = document.getElementById('faq-container');
-                if (faqContainer) {
-                    faqContainer.innerHTML = appData.faq.length > 0 ? faqHtml : '<p class="text-center text-gray-500">Belum ada FAQ.</p>';
-                }
                 return; // Stop disini
             }
 
@@ -439,87 +425,164 @@
             content.innerHTML = `
                 <div id="public-landing-page" class="w-full fade-in pb-10">
                     
-                    <!-- 1. SECTION BERANDA (HERO) -->
-                    <section id="home" class="pt-10 pb-24 md:pt-20 md:pb-32 flex flex-col items-center text-center relative border-b border-gray-100 bg-[url('https://iili.io/CowVeWl.md.png')] bg-cover bg-center bg-no-repeat bg-blend-overlay bg-white/90">
-                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 font-semibold text-sm mb-6 border border-blue-100 shadow-sm">
-                            <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span> LMS Generasi Baru
+                    <!-- 1. SECTION BERANDA (HERO DESAIN MODERN 2-KOLOM TIPE SAAS) -->
+                    <section id="home" class="relative pt-20 pb-20 lg:pt-28 lg:pb-32 overflow-hidden bg-gradient-to-br from-[#eff6ff] via-[#ffffff] to-[#e0e7ff]">
+                        <!-- Decorative Background Blurs -->
+                        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+                            <div class="absolute -top-32 -right-32 w-[500px] h-[500px] bg-blue-300/30 rounded-full filter blur-[100px] opacity-70"></div>
+                            <div class="absolute top-1/2 -left-32 w-[400px] h-[400px] bg-indigo-300/30 rounded-full filter blur-[100px] opacity-70"></div>
                         </div>
-                        <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight max-w-4xl">
-                            Kuasai Web App & <br class="hidden md:block"/>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">Google Sheets Database</span>
-                        </h1>
-                        <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl">
-                            Platform pembelajaran terlengkap untuk membangun sistem informasi modern, cepat, dan tanpa biaya server bulanan.
-                        </p>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="#pricing" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 hover:shadow-lg transition transform hover:-translate-y-1 shadow-blue-500/30">Mulai Belajar <i class="fas fa-arrow-right ml-2"></i></a>
-                            <a href="#about" class="bg-white text-gray-800 border border-gray-200 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-50 hover:shadow transition">Pelajari Lebih Lanjut</a>
+
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                            <div class="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center">
+                                <!-- KOLOM KIRI: TEKS & TOMBOL -->
+                                <div class="text-center lg:text-left pt-8 lg:pt-0">
+                                    <!-- Badge -->
+                                    <div class="inline-flex items-center px-5 py-2 rounded-full bg-blue-600 text-white font-bold text-xs tracking-wider mb-8 shadow-md shadow-blue-500/30 uppercase">
+                                        LMS Generasi Baru
+                                    </div>
+                                    
+                                    <!-- Heading -->
+                                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.15]">
+                                        Kuasai <span class="text-blue-600">Web App</span> & <br class="hidden sm:block"/>
+                                        <span class="text-blue-600">Google Sheets</span> Database
+                                    </h1>
+                                    
+                                    <!-- Subheading -->
+                                    <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                                        Platform pembelajaran terlengkap untuk membangun sistem informasi modern, cepat, dan tanpa biaya server bulanan.
+                                    </p>
+                                    
+                                    <!-- Buttons -->
+                                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
+                                        <a href="#pricing" class="inline-flex justify-center items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1">
+                                            <i class="fas fa-graduation-cap text-xl"></i> Mulai Belajar
+                                        </a>
+                                        <a href="#about" class="inline-flex justify-center items-center gap-3 bg-white text-blue-600 border border-gray-100 shadow-sm px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300">
+                                            <i class="fas fa-play text-lg"></i> Pelajari Lebih Lanjut
+                                        </a>
+                                    </div>
+
+                                    <!-- Features Grid -->
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl mx-auto lg:mx-0">
+                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-blue-600 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                                <i class="fas fa-code"></i>
+                                            </div>
+                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Web App Modern</h4>
+                                            <p class="text-xs text-gray-500 font-medium">HTML, CSS, JS</p>
+                                        </div>
+                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-emerald-500 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                                <i class="fas fa-table"></i>
+                                            </div>
+                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Google Sheets</h4>
+                                            <p class="text-xs text-gray-500 font-medium">Database Gratis</p>
+                                        </div>
+                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-amber-500 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                                <i class="fas fa-cogs"></i>
+                                            </div>
+                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Apps Script</h4>
+                                            <p class="text-xs text-gray-500 font-medium">Integrasi Kuat</p>
+                                        </div>
+                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-sky-500 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                                <i class="fas fa-cloud"></i>
+                                            </div>
+                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Tanpa Server</h4>
+                                            <p class="text-xs text-gray-500 font-medium">Hemat Biaya</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- KOLOM KANAN: GAMBAR HERO/ILUSTRASI -->
+                                <div class="relative flex justify-center lg:justify-end mt-4 lg:mt-0">
+                                    <div class="relative w-full max-w-lg lg:max-w-none">
+                                        <!-- Decorative glowing orb behind image -->
+                                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-blue-300/40 rounded-full filter blur-[70px] z-0 pointer-events-none"></div>
+                                        
+                                        <!-- GAMBAR UTAMA (GANTI URL INI) -->
+                                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEmn1lxsEc-9iUuD7cM0Dgja2prAxuN_TInUgrtAIXACRd16QuLVQlhLaQpH5I65ZNvShy6vyIS9iH4GV0cv0Kqbcshc0vxHKcAJwcW213o5cUNZJcfUgt2uJvnW1F1FaM48d1_EHAxImCi6uuqQtTTVqjLqe5LGSCZpYxOImcTtjfnCBKwnwggGkU2qa-/s320/selamat%20datang%20pakar%20web.webp" alt="Preview Aplikasi" class="relative z-10 w-full h-auto drop-shadow-2xl hover:drop-shadow-3xl transition duration-500" onerror="this.src='https://placehold.co/800x600/eff6ff/2563eb?text=Masukkan+Gambar+Laptop/Mockup+Disini'">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
                     <!-- 2. SECTION TENTANG -->
-                    <section id="about" class="py-24 border-b border-gray-100 px-4">
+                    <section id="about" class="relative pt-20 pb-20 lg:pt-28 lg:pb-32 overflow-hidden bg-gradient-to-br from-[#e0e7ff] via-[#ffffff] to-[#eff6ff]">
+
                         <div class="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+                             <div class="relative">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-blue-100 to-emerald-50 rounded-3xl transform rotate-3 scale-105"></div>
+                                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh3O7ed6sGBYTrwUTN3M7_pOmGdTqasU57VKSA5CZZFmXFQBoE9_DAl3_u4SSW762LxXGkkd8kZeZ4Eyn5Z7DuxILjzuHeAAnjinMvEurxTbgHT7jpbLucXdRNQQzHV0J2J4xy3ien_fLLFSgcIhIyTnPQGjZeXcPBeyaW2_BjGn-eKFZeFrkad4CCLSX0G/s320/Mengapa%20Memilih%20GasDigital%20..webp" alt="Platform Preview" class="relative rounded-2xl shadow-xl w-full object-cover border-4 border-white">
+                            </div>
                             <div>
-                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Mengapa Memilih GasDigital?</h2>
-                                <p class="text-lg text-gray-600 mb-6 leading-relaxed">GasDigital berdedikasi untuk mencetak developer modern yang praktis dan solutif. Kami memanfaatkan ekosistem Google Workspace untuk efisiensi maksimum, tanpa kerumitan setup server.</p>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Mengapa Memilih EduDigital?</h2>
+                                <p class="text-lg text-gray-600 mb-6 leading-relaxed">EduDigital berdedikasi untuk mencetak developer modern yang praktis dan solutif. Kami memanfaatkan ekosistem Google Workspace untuk efisiensi maksimum, tanpa kerumitan setup server.</p>
                                 <ul class="space-y-4">
                                     <li class="flex items-start"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-3 text-xl"></i> <span class="text-gray-700 font-medium">Teknologi Web App Mutakhir</span></li>
                                     <li class="flex items-start"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-3 text-xl"></i> <span class="text-gray-700 font-medium">Database Gratis (Google Sheets)</span></li>
                                     <li class="flex items-start"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-3 text-xl"></i> <span class="text-gray-700 font-medium">Akses Materi Selamanya (Lifetime)</span></li>
                                 </ul>
                             </div>
-                            <div class="relative">
-                                <div class="absolute inset-0 bg-gradient-to-tr from-blue-100 to-emerald-50 rounded-3xl transform rotate-3 scale-105"></div>
-                                <img src="MASUKKAN_LINK_GAMBAR_ANDA_DISINI" alt="Platform Preview" class="relative rounded-2xl shadow-xl w-full object-cover border-4 border-white">
-                            </div>
-                        </div>
+                                                   </div>
                     </section>
 
-                    <!-- 3. SECTION HARGA -->
-                    <section id="pricing" class="py-24 border-b border-gray-100 px-4">
-                        <div class="text-center max-w-3xl mx-auto mb-16">
-                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Investasi Sekali, Akses Selamanya</h2>
-                            <p class="text-gray-600 text-lg">Pilih paket yang sesuai dengan kebutuhan Anda. Tanpa biaya langganan bulanan.</p>
-                        </div>
-                        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                            <!-- Paket Basic -->
-                            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition flex flex-col">
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Basic</h3>
-                                <p class="text-gray-500 mb-6 text-sm">Untuk pemula yang ingin mencoba.</p>
-                                <div class="mb-6"><span class="text-4xl font-extrabold text-gray-900">Rp 99rb</span></div>
-                                <ul class="space-y-4 mb-8 flex-1">
-                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-2 mt-1"></i> Modul Dasar Web App</li>
-                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-2 mt-1"></i> Grup Komunitas</li>
-                                </ul>
-                                <button onclick="openLogin()" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-200 transition">Pilih Paket</button>
+                    <!-- 3. SECTION HARGA (TAILWINDFLEX WIDE CARD STYLE) -->
+                    <section id="pricing" class="py-24 border-b border-gray-100 px-4 bg-gray-50">
+                        <div class="max-w-5xl mx-auto">
+                            
+                            <!-- Container Harga Utama (Split Kiri-Kanan) -->
+                            <div class="flex flex-col md:flex-row bg-[#475569] rounded-xl shadow-2xl overflow-hidden">
+                                
+                                <!-- Bagian Kiri: Deskripsi & Fitur (Warna Slate Terang) -->
+                                <div class="md:w-2/3 p-8 md:p-12 flex flex-col justify-center">
+                                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Akses Seumur Hidup</h2>
+                                    <p class="text-slate-200 text-base md:text-lg mb-8">Bawa pengembangan Web App CSS & Tailwind Anda ke level berikutnya!</p>
+                                    
+                                    <!-- Garis Pemisah Tipis -->
+                                    <hr class="border-slate-500 mb-8 opacity-50">
+                                    
+                                    <!-- Grid Fitur -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                                        <div class="flex items-start">
+                                            <i class="fas fa-check-circle text-emerald-400 mt-1 mr-3 text-lg"></i>
+                                            <span class="text-slate-200 text-sm">Inspeksi website Tailwind CSS</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <i class="fas fa-check-circle text-emerald-400 mt-1 mr-3 text-lg"></i>
+                                            <span class="text-slate-200 text-sm">Mode edit secara real-time</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <i class="fas fa-check-circle text-emerald-400 mt-1 mr-3 text-lg"></i>
+                                            <span class="text-slate-200 text-sm">Salin class utility langsung ke clipboard</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <i class="fas fa-check-circle text-emerald-400 mt-1 mr-3 text-lg"></i>
+                                            <span class="text-slate-200 text-sm">Update ekstensi Chrome gratis selamanya</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Bagian Kanan: Harga & Tombol Beli (Warna Slate Gelap) -->
+                                <div class="md:w-1/3 bg-[#334155] p-8 md:p-12 flex flex-col items-center justify-center text-center">
+                                    <p class="text-slate-200 text-sm md:text-base mb-4">Bayar sekali, miliki selamanya</p>
+                                    
+                                    <div class="flex items-baseline justify-center mb-6">
+                                        <span class="text-5xl font-extrabold text-white tracking-tight">Rp 199k</span>
+                                    </div>
+                                    
+                                    <a href="https://lynk.id/pmjakak" target="_blank" class="w-full bg-[#6366f1] hover:bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md transition duration-200 shadow-sm mb-4">
+                                        Beli Sekarang
+                                    </a>
+                                    
+                                    <p class="text-xs text-slate-400">100% garansi uang kembali</p>
+                                </div>
+                                
                             </div>
-                            <!-- Paket Pro -->
-                            <div class="bg-blue-600 rounded-3xl p-8 border border-blue-600 shadow-2xl transform md:-translate-y-4 flex flex-col relative">
-                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow-md">Paling Laris</div>
-                                <h3 class="text-xl font-bold text-white mb-2">Lifetime Pro</h3>
-                                <p class="text-blue-100 mb-6 text-sm">Akses penuh ke semua materi & update.</p>
-                                <div class="mb-6"><span class="text-4xl font-extrabold text-white">Rp 199rb</span></div>
-                                <ul class="space-y-4 mb-8 flex-1">
-                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-2 mt-1"></i> Semua Modul (Dasar - Lanjut)</li>
-                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-2 mt-1"></i> Akses Source Code</li>
-                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-2 mt-1"></i> Live Session & Rekaman</li>
-                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-2 mt-1"></i> Konsultasi Prioritas</li>
-                                </ul>
-                                <button onclick="openLogin()" class="w-full bg-white text-blue-600 font-bold py-3 rounded-xl hover:bg-gray-50 transition shadow-lg">Gabung Sekarang</button>
-                            </div>
-                            <!-- Paket Mentoring -->
-                            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition flex flex-col">
-                                <h3 class="text-xl font-bold text-gray-800 mb-2">Mentoring</h3>
-                                <p class="text-gray-500 mb-6 text-sm">Bimbingan intensif 1-on-1 private.</p>
-                                <div class="mb-6"><span class="text-4xl font-extrabold text-gray-900">Rp 999rb</span></div>
-                                <ul class="space-y-4 mb-8 flex-1">
-                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-2 mt-1"></i> Semua Fasilitas Pro</li>
-                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-2 mt-1"></i> 4x Sesi Zoom Private</li>
-                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-2 mt-1"></i> Bantuan Review Kode</li>
-                                </ul>
-                                <button onclick="openLogin()" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-200 transition">Hubungi Kami</button>
-                            </div>
+                            
                         </div>
                     </section>
 
@@ -535,7 +598,7 @@
                             </div>
                             <div class="grid md:grid-cols-3 gap-8">
                                 <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition group cursor-pointer flex flex-col">
-                                    <div class="h-48 overflow-hidden"><img src="URL_GAMBAR_ARTIKEL_1" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
+                                    <div class="h-48 overflow-hidden"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-gIamokzNn0ivKhtEOMV0EhYdX6lpD6EPflkdo08eoqUQBdAM0AZXJYsaUaKNWVK1KU2msLuvM6hReZGofwUy_pinK0Sdd8HjmDJvfuppw_nvbkoI1w6X0kHIlpJylZ0YCkYxgN9S_pxaBP3d__K_N0jhgW0K_ZbaGuNr7-VxuWz44lGbAVBLlZ7J9BZ9/s320/google%20apps%20script.webp" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
                                     <div class="p-6 flex-1 flex flex-col">
                                         <div class="text-xs font-bold text-blue-600 mb-2 uppercase tracking-wider">Tutorial</div>
                                         <h3 class="text-lg font-bold text-gray-900 mb-2">Keunggulan Apps Script</h3>
@@ -544,7 +607,7 @@
                                     </div>
                                 </div>
                                 <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition group cursor-pointer flex flex-col">
-                                    <div class="h-48 overflow-hidden"><img src="URL_GAMBAR_ARTIKEL_2" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
+                                    <div class="h-48 overflow-hidden"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhcvq6EolBLShuMXjcGcN5svr-axrOFztmJS2wrx46kiR4uJDGZWP0hSfT-WhD5SSM3v1nEDJRID1GCh4yAA5Mk1cGOthyphenhyphenmwPH31RIkszTEtuQ1DrHWE_wr1JtRWjKLpVHEvd-lxsKPeOflef551ScSiIjQq3OEh3M3I3tniIFVfitZ77KKGo9utjw80xPi/s1600/tailwind%20css.webp" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
                                     <div class="p-6 flex-1 flex flex-col">
                                         <div class="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wider">Frontend</div>
                                         <h3 class="text-lg font-bold text-gray-900 mb-2">Styling Cepat & Modern</h3>
@@ -553,7 +616,7 @@
                                     </div>
                                 </div>
                                 <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition group cursor-pointer flex flex-col">
-                                    <div class="h-48 overflow-hidden"><img src="URL_GAMBAR_ARTIKEL_3" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
+                                    <div class="h-48 overflow-hidden"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4DZqyXHUAA0Pi5MwUD6rqj5kC0bpzB6-HztBjxEKlw6BAFTSYPxtlZCNppUqYfcayAQOURwra3qZRXA7AqP-XGB6OQ5ixzk6rew1cpd-HDt8GvVMUN2UiEpc9V_20b2Rcp241pEnkvIiOoL2WvnftreB6uP4MFlhGuB2nfD1hoZoBKaBGE8D6NDWQUA5W/s320/spreadseet.webp" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
                                     <div class="p-6 flex-1 flex flex-col">
                                         <div class="text-xs font-bold text-purple-600 mb-2 uppercase tracking-wider">Arsitektur</div>
                                         <h3 class="text-lg font-bold text-gray-900 mb-2">Spreadsheet jadi Database</h3>
@@ -565,15 +628,25 @@
                         </div>
                     </section>
 
-                    <!-- 5. SECTION FAQ -->
+                    <!-- 5. SECTION FAQ (DIBUAT STATIS/HARDCODE) -->
                     <section id="faq" class="py-24 px-4 bg-gray-50/50">
                         <div class="text-center max-w-3xl mx-auto mb-12">
                             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pertanyaan Umum</h2>
                             <p class="text-gray-600 text-lg">Jawaban cepat untuk hal-hal yang sering ditanyakan.</p>
                         </div>
-                        <!-- ID faq-container DITAMBAHKAN AGAR BISA DI-UPDATE JS -->
-                        <div id="faq-container" class="grid gap-4 max-w-3xl mx-auto">
-                            ${appData.faq.length > 0 ? faqHtml : '<p class="text-center text-gray-500">Belum ada FAQ.</p>'}
+                        <div class="grid gap-4 max-w-3xl mx-auto">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                                <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Apakah materi ini gratis?</span></h4>
+                                <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Kami menyediakan paket Basic dengan harga terjangkau untuk pemula, serta paket Lifetime Pro untuk akses materi tingkat lanjut dan update selamanya.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                                <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Apakah saya perlu sewa hosting/server?</span></h4>
+                                <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Tidak sama sekali. Semua arsitektur yang kami ajarkan menggunakan ekosistem gratis dari Google (Google Apps Script & Google Sheets).</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                                <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Bagaimana cara mendapatkan bimbingan?</span></h4>
+                                <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Anda bisa memilih paket Mentoring di mana Anda akan dibimbing secara intensif secara private 1-on-1 melalui sesi Zoom.</p>
+                            </div>
                         </div>
                     </section>
                 </div>
@@ -725,8 +798,6 @@
 
             // Langsung update layar agar pengguna melihat perubahan (Optimistic UI)
             renderDashboardContent();
-            // KHUSUS FAQ: Render public page ulang agar data di background tersinkron!
-            if (entity === 'faq' && !currentUser) renderPublicContent();
 
             showToast("Perubahan diterapkan seketika!", "success");
 
@@ -779,7 +850,7 @@
                 showToast("Gagal terhubung ke Database. Menampilkan mode simulasi...", "error");
 
                 // FALLBACK KE MOCK DATA AGAR UI TETAP JALAN MESKIPUN URL GAS ERROR / BELUM DI-DEPLOY
-                if (appData.faq.length === 0) {
+                if (appData.courses.length === 0) {
                     appData.users = [
                         { id: '1', username: 'admin', password: '123', role: 'admin', name: 'Super Admin' },
                         { id: '2', username: 'user', password: '123', role: 'peserta', name: 'Peserta Aktif' }
@@ -787,11 +858,6 @@
                     appData.courses = [{ id: 'c1', title: 'Mastering Apps Script', description: 'Belajar membuat backend tanpa server.', thumbnail_url: 'https://placehold.co/600x400/2563eb/white?text=Apps+Script', content_url: '#' }];
                     appData.live = [{ id: 'l1', topic: 'Q&A Web App Development', date_time: 'Besok, 19:30 WIB', meeting_link: '#' }];
                     appData.tools = [{ id: 't1', tool_name: 'CSS Generator', description: 'Buat bayangan kotak dengan mudah', access_link: '#', icon_url: 'https://placehold.co/100/10b981/white?text=CSS' }];
-                    appData.faq = [{
-                        id: 'error_koneksi',
-                        question: '🚨 Mode Simulasi Aktif',
-                        answer: 'Terjadi masalah koneksi ke Google Apps Script (Failed to fetch). Saat ini Anda melihat data simulasi. Pastikan Anda telah men-deploy GAS sebagai Web App dengan "Who has access: Anyone".'
-                    }];
                     renderApp();
                 }
             }
