@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduDigital - Pakar Web App LMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS KHUSUS BLOGGER OVERRIDE & ANIMATIONS */
+        .blogger-top-navbar {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Toast Styles */
+        #toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.5s;
+        }
+
+        .toast-success {
+            background-color: #10b981;
+        }
+
+        .toast-error {
+            background-color: #ef4444;
+        }
+
+        .toast-info {
+            background-color: #3b82f6;
+        }
+
+        /* Mobile Scroll Hide */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* Smooth Scrolling untuk Main Container */
+        main {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800 antialiased h-screen flex flex-col overflow-hidden">
+
+    <!-- INITIAL LOADING TEXT (WILL BE HIDDEN) -->
+    <div id="init-loader"
+        class="fixed inset-0 bg-white z-50 flex items-center justify-center font-bold text-2xl text-blue-600">
+        Menyiapkan Lingkungan Aplikasi...
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
+
+    <!-- TOP NAVIGATION (GLOBAL & DESKTOP) -->
+    <header class="bg-white shadow-sm z-40 relative border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="#home" class="flex items-center cursor-pointer">
+                    <i class="fas fa-graduation-cap text-blue-600 text-3xl mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight text-gray-900">EduDigital</span>
+                </a>
+
+                <!-- Desktop Public Nav (Sembunyi saat Login) -->
+                <nav id="desktop-public-nav" class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-gray-600 hover:text-blue-600 font-medium transition">Beranda</a>
+                    <a href="#about" class="text-gray-600 hover:text-blue-600 font-medium transition">Tentang</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-blue-600 font-medium transition">Harga</a>
+                    <a href="#articles" class="text-gray-600 hover:text-blue-600 font-medium transition">Artikel</a>
+                    <a href="#faq" class="text-gray-600 hover:text-blue-600 font-medium transition">FAQ</a>
+                    <button onclick="openLogin()"
+                        class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition shadow-md shadow-blue-500/30">Login
+                        LMS</button>
+                </nav>
+
+                <!-- Tombol Login Mobile (Sembunyi saat Login) -->
+                <div id="mobile-login-btn" class="md:hidden">
+                    <button onclick="openLogin()"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-sm shadow-md shadow-blue-500/30">Login</button>
+                </div>
+
+                <!-- User Profile / Logout (Muncul saat Login) -->
+                <div id="user-menu" class="hidden items-center space-x-4">
+                    <div class="text-sm text-right hidden md:block">
+                        <p id="user-name-display" class="font-bold text-gray-900"></p>
+                        <p id="user-role-display" class="text-gray-500 uppercase text-xs"></p>
+                    </div>
+                    <button onclick="handleLogout()"
+                        class="bg-red-50 text-red-600 px-4 py-2 rounded-md font-medium hover:bg-red-100 transition text-sm">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP LAYOUT (FLEX) -->
+    <div class="flex flex-1 overflow-hidden relative">
+
+        <!-- SIDEBAR (DESKTOP DASHBOARD ONLY) -->
+        <aside id="desktop-sidebar"
+            class="hidden flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner">
+            <div class="p-4 border-b border-gray-100">
+                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Menu Panel</h2>
+            </div>
+            <nav id="sidebar-nav-container" class="flex-1 p-4 space-y-1">
+                <!-- Injected via JS -->
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 relative flex flex-col">
+            <div class="w-full flex-1" id="main-content">
+                <!-- Content injected here -->
+            </div>
+
+            <!-- BLOGGER SPACER ANCHOR (WAJIB UNTUK MOBILE AGAR KONTEN TIDAK TERTUTUP BOTTOM NAV) -->
+            <div id="mobile-spacer" class="pb-24 block clear-both content-none hidden"></div>
+
+            <!-- GLOBAL FOOTER -->
+            <footer id="global-footer" class="bg-white border-t border-gray-200 mt-auto">
+                <div
+                    class="max-w-7xl mx-auto py-8 px-4 text-center text-gray-500 text-sm flex flex-col md:flex-row justify-between items-center">
+                    <p>&copy; <span id="year"></span> EduDigital LMS. Hak Cipta Dilindungi.</p>
+                    <div class="mt-4 md:mt-0 space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-blue-600 transition"><i
+                                class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-600 transition"><i
+                                class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-600 transition"><i
+                                class="fab fa-youtube text-xl"></i></a>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION (DASHBOARD ONLY) -->
+    <nav id="mobile-bottom-nav"
+        class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+        <!-- Injected via JS -->
+    </nav>
+
+    <!-- LOGIN MODAL -->
+    <div id="login-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden slide-up">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900">Masuk ke LMS</h2>
+                    <button onclick="closeLogin()"
+                        class="text-gray-400 hover:text-gray-600 bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center"><i
+                            class="fas fa-times"></i></button>
+                </div>
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="mb-5">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                        <input type="text" id="login-username" required
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition bg-gray-50">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="login-password" required
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition bg-gray-50">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition w-full shadow-lg shadow-blue-500/30">
+                        Login Sekarang
+                    </button>
+                </form>
+                <div class="mt-6 text-center text-sm text-gray-500" id="login-hint">
+                    (Masukkan username dan password, jika belum punya hubungi admin untuk akses)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FORM CRUD -->
+    <div id="crud-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden slide-up flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+                <h2 id="crud-modal-title" class="text-xl font-bold text-gray-900">Form Data</h2>
+                <button onclick="closeCrudModal()" class="text-gray-400 hover:text-gray-600"><i
+                        class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-4 overflow-y-auto flex-1">
+                <form id="crud-form">
+                    <div id="crud-form-fields" class="space-y-4"></div>
+                </form>
+            </div>
+            <div class="p-4 border-t bg-gray-50 flex justify-end">
+                <button type="button" onclick="closeCrudModal()"
+                    class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300">Batal</button>
+                <button type="button" onclick="submitCrudForm()"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Simpan
+                    Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION & DATABASE CONNECTION
+        // ==========================================
+        // STATUS DEFAULT: true untuk mode pengujian (preview UI). 
+        // Ubah menjadi false JIKA terhubung ke Google Apps Script (Live).
+        const IS_PREVIEW = false;
+        const GAS_URL = "https://script.google.com/macros/s/AKfycby0FHBt8HG0-Ny6KI-3szgejzuPiVZJOV9YzFcX-gzA4_hWNeo-oqhPlVsEUBycbqb5/exec";
+        // ==========================================
+        // ENKRIPSI STRING AMAN (MENCEGAH ERROR HTML INJECTION)
+        // ==========================================
+        const encodeBase64Safe = (str) => btoa(encodeURIComponent(str || ""));
+        const decodeBase64Safe = (str) => decodeURIComponent(atob(str || ""));
+        const generateId = () => 'ID_' + Math.random().toString(36).substr(2, 9);
+
+        // ==========================================
+        // APP STATE & DATA MOCKING
+        // ==========================================
+        let currentUser = null; // null = public, object = logged in
+        let currentMenu = 'home'; // active dashboard/public menu
+
+        let appData = {
+            courses: [], live: [], tools: [], templates: [], market: [], faq: [], users: []
+        };
+
+        // Konfigurasi Navigasi Dashboard
+        const dashboardMenus = [
+            { id: 'dash_home', icon: 'fa-chart-pie', label: 'Dashboard' },
+            { id: 'courses', icon: 'fa-video', label: 'Courses' },
+            { id: 'live', icon: 'fa-satellite-dish', label: 'Live' },
+            { id: 'tools', icon: 'fa-wrench', label: 'Tools' },
+            { id: 'templates', icon: 'fa-file-code', label: 'Templates' },
+            { id: 'market', icon: 'fa-store', label: 'Market' },
+            { id: 'faq', icon: 'fa-question-circle', label: 'FAQ Data' },
+        ];
+
+        // Definisi Struktur Skema (Untuk Admin Auto Form Generator)
+        const schema = {
+            courses: [
+                { key: 'title', label: 'Judul Course', type: 'text' },
+                { key: 'description', label: 'Deskripsi', type: 'textarea' },
+                { key: 'thumbnail_url', label: 'URL Thumbnail', type: 'text' },
+                { key: 'content_url', label: 'URL Video/Konten', type: 'text' },
+            ],
+            live: [
+                { key: 'topic', label: 'Topik Live', type: 'text' },
+                { key: 'date_time', label: 'Waktu (Misal: 10 Okt, 19:00)', type: 'text' },
+                { key: 'meeting_link', label: 'Link Zoom/GMeet', type: 'text' },
+            ],
+            tools: [
+                { key: 'tool_name', label: 'Nama Tool', type: 'text' },
+                { key: 'description', label: 'Deskripsi Singkat', type: 'textarea' },
+                { key: 'access_link', label: 'Link Akses', type: 'text' },
+                { key: 'icon_url', label: 'URL Icon Image', type: 'text' },
+            ],
+            templates: [
+                { key: 'template_name', label: 'Nama Template', type: 'text' },
+                { key: 'category', label: 'Kategori', type: 'text' },
+                { key: 'download_link', label: 'Link Download', type: 'text' },
+                { key: 'preview_img', label: 'URL Gambar Preview', type: 'text' },
+            ],
+            market: [
+                { key: 'product_name', label: 'Nama Produk', type: 'text' },
+                { key: 'price', label: 'Harga (Rp)', type: 'text' },
+                { key: 'description', label: 'Deskripsi', type: 'textarea' },
+                { key: 'buy_link', label: 'Link Checkout', type: 'text' },
+                { key: 'image_url', label: 'URL Gambar Produk', type: 'text' },
+            ],
+            faq: [
+                { key: 'question', label: 'Pertanyaan', type: 'textarea' },
+                { key: 'answer', label: 'Jawaban', type: 'textarea' },
+            ]
+        };
+
+        // ==========================================
+        // INITIALIZATION & PERSISTENT LOGIN
+        // ==========================================
+        window.onload = () => {
+            document.getElementById('year').innerText = new Date().getFullYear();
+
+            // Initial Mock Data Setup for IS_PREVIEW
+            if (IS_PREVIEW) {
+                appData.users = [
+                    { id: '1', username: 'admin', password: '123', role: 'admin', name: 'Super Admin' },
+                    { id: '2', username: 'user', password: '123', role: 'peserta', name: 'Peserta Aktif' }
+                ];
+                appData.courses = [{ id: 'c1', title: 'Mastering Apps Script', description: 'Belajar membuat backend tanpa server.', thumbnail_url: 'https://placehold.co/600x400/2563eb/white?text=Apps+Script', content_url: '#' }];
+                appData.live = [{ id: 'l1', topic: 'Q&A Web App Development', date_time: 'Besok, 19:30 WIB', meeting_link: '#' }];
+                appData.tools = [{ id: 't1', tool_name: 'CSS Generator', description: 'Buat bayangan kotak dengan mudah', access_link: '#', icon_url: 'https://placehold.co/100/10b981/white?text=CSS' }];
+                appData.faq = [{ id: 'f1', question: 'Apakah ini gratis?', answer: 'Tersedia paket gratis dan berbayar untuk tingkat lanjutan.' }];
+
+                // Load LocalStorage Mock Database if exists
+                const localMock = localStorage.getItem('mockAppData');
+                if (localMock) appData = JSON.parse(localMock);
+            }
+
+            // Persist Login Check
+            const savedSession = localStorage.getItem('userSession');
+            if (savedSession) {
+                currentUser = JSON.parse(savedSession);
+                currentMenu = 'dash_home';
+            } else {
+                currentUser = null;
+                currentMenu = 'home';
+            }
+
+            // Init Fetch Real Data if Not Preview
+            if (!IS_PREVIEW) fetchAllDataFromServer();
+
+            // Render First Paint & Remove Loader
+            setTimeout(() => {
+                document.getElementById('init-loader').classList.add('hidden');
+                renderApp();
+            }, 300);
+        };
+
+        // ==========================================
+        // CORE RENDERER ENGINE (PENGATURAN NAVIGASI UTAMA)
+        // ==========================================
+        function renderApp() {
+            const isPublic = !currentUser;
+
+            // Komponen Navigasi
+            const publicNav = document.getElementById('desktop-public-nav');
+            const mobileLoginBtn = document.getElementById('mobile-login-btn');
+            const userMenu = document.getElementById('user-menu');
+            const sidebar = document.getElementById('desktop-sidebar');
+            const bottomNav = document.getElementById('mobile-bottom-nav');
+            const mobileSpacer = document.getElementById('mobile-spacer');
+
+            if (isPublic) {
+                // STATUS: BELUM LOGIN (HALAMAN PUBLIK)
+                publicNav.className = "hidden md:flex space-x-8 items-center"; // Muncul di Desktop
+                mobileLoginBtn.className = "md:hidden block"; // Tombol login mobile muncul
+                userMenu.className = "hidden"; // Sembunyikan Info Profil
+                sidebar.className = "hidden"; // Sembunyikan Sidebar Panel Desktop
+                bottomNav.className = "hidden"; // Sembunyikan Navigasi Bawah Mobile
+                mobileSpacer.className = "hidden"; // Sembunyikan Spacer
+
+                // Render Konten Publik (Landing Page)
+                renderPublicContent();
+            } else {
+                // STATUS: SUDAH LOGIN (DASHBOARD)
+                publicNav.className = "hidden"; // Sembunyikan Menu Publik Desktop
+                mobileLoginBtn.className = "hidden"; // Sembunyikan Tombol Login Mobile
+                userMenu.className = "flex items-center space-x-4"; // Tampilkan Info Profil
+                sidebar.className = "hidden md:flex flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner"; // Tampilkan Sidebar Desktop
+                bottomNav.className = "flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]"; // Tampilkan Nav Bawah Mobile
+                mobileSpacer.className = "pb-24 block clear-both content-none md:hidden"; // Aktifkan Spacer agar terbawah tidak tertutup
+
+                document.getElementById('user-name-display').innerText = currentUser.name;
+                document.getElementById('user-role-display').innerText = currentUser.role;
+
+                // Render Menu & Konten Dashboard
+                renderNavigationLinks();
+                renderDashboardContent();
+            }
+        }
+
+        // Render Navigasi Menu Samping (Desktop) & Bawah (Mobile)
+        function renderNavigationLinks() {
+            const sideNav = document.getElementById('sidebar-nav-container');
+            const bottomNav = document.getElementById('mobile-bottom-nav');
+            sideNav.innerHTML = ''; bottomNav.innerHTML = '';
+
+            dashboardMenus.forEach(menu => {
+                const isActive = currentMenu === menu.id;
+
+                // Sidebar Item (Desktop)
+                const sBtn = document.createElement('button');
+                sBtn.className = `w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`;
+                sBtn.innerHTML = `<i class="fas ${menu.icon} w-6 text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}"></i> <span>${menu.label}</span>`;
+                sBtn.onclick = () => { currentMenu = menu.id; renderApp(); };
+                sideNav.appendChild(sBtn);
+
+                // Bottom Nav Item (Mobile) - Limit text
+                const bBtn = document.createElement('button');
+                bBtn.className = `flex flex-col items-center justify-center w-full h-full text-xs transition ${isActive ? 'text-blue-600' : 'text-gray-500'}`;
+                bBtn.innerHTML = `<i class="fas ${menu.icon} text-xl mb-1"></i> <span class="truncate w-full text-center px-1" style="font-size: 0.65rem;">${menu.label}</span>`;
+                bBtn.onclick = () => { currentMenu = menu.id; renderApp(); };
+                bottomNav.appendChild(bBtn);
+            });
+        }
+
+        // ==========================================
+        // PUBLIC PAGES RENDERER (SPA LANDING PAGE)
+        // ==========================================
+        function renderPublicContent() {
+            const content = document.getElementById('main-content');
+
+            // Cegah render ulang jika halaman publik sudah termuat (optimasi untuk smooth scrolling)
+            if (content.querySelector('#public-landing-page')) return;
+
+            let faqHtml = '';
+            appData.faq.forEach(f => {
+                faqHtml += `<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition"><h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>${f.question}</span></h4><p class="text-gray-600 mt-3 ml-8 leading-relaxed">${f.answer}</p></div>`;
+            });
+
+            content.innerHTML = `
+                <div id="public-landing-page" class="w-full fade-in pb-10">
+                    
+                    <!-- 1. SECTION BERANDA -->
+<!-- 1. SECTION BERANDA -->
+                    <section id="home" class="pt-10 pb-24 md:pt-20 md:pb-32 flex flex-col items-center text-center relative border-b border-gray-100 bg-[url('https://iili.io/CowVeWl.md.png')] bg-cover bg-center bg-no-repeat bg-blend-overlay bg-white/90">                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 font-semibold text-sm mb-6 border border-blue-100 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span> LMS Generasi Baru
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight max-w-4xl">
+                            Kuasai Web App & <br class="hidden md:block"/>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">Google Sheets Database</span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl">
+                            Platform pembelajaran terlengkap untuk membangun sistem informasi modern, cepat, dan tanpa biaya server bulanan.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="#pricing" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 hover:shadow-lg transition transform hover:-translate-y-1 shadow-blue-500/30">Mulai Belajar <i class="fas fa-arrow-right ml-2"></i></a>
+                            <a href="#about" class="bg-white text-gray-800 border border-gray-200 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-50 hover:shadow transition">Pelajari Lebih Lanjut</a>
+                        </div>
+                    </section>
+
+                    <!-- 2. SECTION TENTANG -->
+                    <section id="about" class="py-24 border-b border-gray-100 px-4 max-w-7xl mx-auto">
+                        <div class="grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Mengapa Memilih EduDigital?</h2>
+                                <p class="text-lg text-gray-600 mb-6 leading-relaxed">EduDigital berdedikasi untuk mencetak developer modern yang praktis dan solutif. Kami memanfaatkan ekosistem Google Workspace untuk efisiensi maksimum, tanpa kerumitan setup server.</p>
+                                <ul class="space-y-4">
+                                    <li class="flex items-start bg-white p-4 rounded-xl shadow-sm border border-gray-50"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-4 text-xl"></i> <div><h4 class="font-bold text-gray-900">Teknologi Web App Mutakhir</h4><p class="text-sm text-gray-500">Dibangun dengan standar SPA & Tailwind CSS.</p></div></li>
+                                    <li class="flex items-start bg-white p-4 rounded-xl shadow-sm border border-gray-50"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-4 text-xl"></i> <div><h4 class="font-bold text-gray-900">Database Gratis (Google Sheets)</h4><p class="text-sm text-gray-500">Hemat biaya server dengan Apps Script.</p></div></li>
+                                    <li class="flex items-start bg-white p-4 rounded-xl shadow-sm border border-gray-50"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-4 text-xl"></i> <div><h4 class="font-bold text-gray-900">Akses Materi Selamanya (Lifetime)</h4><p class="text-sm text-gray-500">Belajar kapan saja tanpa batasan waktu.</p></div></li>
+                                </ul>
+                            </div>
+                            <div class="relative mt-8 md:mt-0">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-blue-100 to-emerald-50 rounded-3xl transform rotate-3 scale-105"></div>
+<img src="https://iili.io/CowVeWl.md.png" alt="Platform Preview" class="relative rounded-2xl shadow-xl w-full object-cover">                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. SECTION HARGA -->
+                    <section id="pricing" class="py-24 border-b border-gray-100 px-4 bg-gray-50">
+                        <div class="text-center max-w-3xl mx-auto mb-16">
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Investasi Sekali, Akses Selamanya</h2>
+                            <p class="text-gray-600 text-lg">Pilih paket yang sesuai dengan kebutuhan Anda. Tanpa biaya langganan bulanan.</p>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                            <!-- Paket Basic -->
+                            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition flex flex-col relative z-10">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Basic</h3>
+                                <p class="text-gray-500 mb-6 text-sm">Untuk pemula yang ingin mencoba.</p>
+                                <div class="mb-6"><span class="text-4xl font-extrabold text-gray-900">Rp 99rb</span></div>
+                                <ul class="space-y-4 mb-8 flex-1">
+                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-3 mt-1"></i> Modul Dasar Web App</li>
+                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-3 mt-1"></i> Akses 1 Project Template</li>
+                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-3 mt-1"></i> Grup Komunitas</li>
+                                </ul>
+                                <button onclick="openLogin()" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-200 transition">Pilih Paket</button>
+                            </div>
+                            <!-- Paket Pro -->
+                            <div class="bg-blue-600 rounded-3xl p-8 border border-blue-600 shadow-2xl transform md:-translate-y-4 flex flex-col relative z-20">
+                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-emerald-400 to-emerald-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow-lg">Paling Laris</div>
+                                <h3 class="text-xl font-bold text-white mb-2">Lifetime Pro</h3>
+                                <p class="text-blue-100 mb-6 text-sm">Akses penuh ke semua materi & update.</p>
+                                <div class="mb-6"><span class="text-4xl font-extrabold text-white">Rp 199rb</span></div>
+                                <ul class="space-y-4 mb-8 flex-1">
+                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-3 mt-1"></i> Semua Modul (Dasar - Lanjut)</li>
+                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-3 mt-1"></i> Akses Semua Source Code</li>
+                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-3 mt-1"></i> Live Session & Rekaman</li>
+                                    <li class="flex text-sm text-blue-50"><i class="fas fa-check text-emerald-300 mr-3 mt-1"></i> Konsultasi Prioritas</li>
+                                </ul>
+                                <button onclick="openLogin()" class="w-full bg-white text-blue-600 font-bold py-3 rounded-xl hover:bg-gray-50 transition shadow-lg">Gabung Sekarang</button>
+                            </div>
+                            <!-- Paket Mentoring -->
+                            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl transition flex flex-col relative z-10">
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Mentoring</h3>
+                                <p class="text-gray-500 mb-6 text-sm">Bimbingan intensif 1-on-1 private.</p>
+                                <div class="mb-6"><span class="text-4xl font-extrabold text-gray-900">Rp 999rb</span></div>
+                                <ul class="space-y-4 mb-8 flex-1">
+                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-3 mt-1"></i> Semua Fasilitas Pro</li>
+                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-3 mt-1"></i> 4x Sesi Zoom Private</li>
+                                    <li class="flex text-sm text-gray-600"><i class="fas fa-check text-emerald-500 mr-3 mt-1"></i> Bantuan Review Kode</li>
+                                </ul>
+                                <button onclick="openLogin()" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-200 transition">Hubungi Kami</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 4. SECTION ARTIKEL -->
+                    <section id="articles" class="py-24 border-b border-gray-100 px-4 max-w-7xl mx-auto">
+                        <div class="flex justify-between items-end mb-12">
+                            <div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Artikel & Insights</h2>
+                                <p class="text-gray-600 text-lg">Tips dan trik seputar pengembangan web modern.</p>
+                            </div>
+                            <a href="#" class="hidden md:block text-blue-600 font-semibold hover:text-blue-700 transition">Lihat Semua <i class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-8">
+                            <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition group cursor-pointer flex flex-col">
+                                <div class="h-48 overflow-hidden"><img src="https://iili.io/CowVeWl.md.png" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></div>
+                                <div class="p-6 flex-1 flex flex-col">
+                                    <div class="text-xs font-bold text-blue-600 mb-2 uppercase tracking-wider">Tutorial</div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Keunggulan Apps Script</h3>
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">Pelajari keuntungan membangun backend menggunakan bahasa JavaScript di ekosistem Google secara gratis dan efisien.</p>
+                                    <span class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition mt-auto">Baca selengkapnya &rarr;</span>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition group cursor-pointer flex flex-col">
+                                <div class="h-48 overflow-hidden"><img src="https://iili.io/CowVeWl.md.png" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></div>
+                                <div class="p-6 flex-1 flex flex-col">
+                                    <div class="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wider">Frontend</div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Styling Cepat & Modern</h3>
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">Bagaimana framework Tailwind CSS mengubah cara kita mendesain tampilan web selamanya, menjadikannya responsif dan indah.</p>
+                                    <span class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition mt-auto">Baca selengkapnya &rarr;</span>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition group cursor-pointer flex flex-col">
+                                <div class="h-48 overflow-hidden"><img src="https://iili.io/CowVeWl.md.png" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500"></div>
+                                <div class="p-6 flex-1 flex flex-col">
+                                    <div class="text-xs font-bold text-purple-600 mb-2 uppercase tracking-wider">Arsitektur</div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Spreadsheet jadi Database</h3>
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">Mitos dan fakta tentang penggunaan Google Sheets sebagai database utama sistem Anda, serta batasan yang perlu diketahui.</p>
+                                    <span class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition mt-auto">Baca selengkapnya &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 5. SECTION FAQ -->
+                    <section id="faq" class="py-24 px-4 bg-gray-50">
+                        <div class="text-center max-w-3xl mx-auto mb-12">
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pertanyaan Umum</h2>
+                            <p class="text-gray-600 text-lg">Jawaban cepat untuk hal-hal yang sering ditanyakan oleh calon peserta.</p>
+                        </div>
+                        <div class="grid gap-4 max-w-3xl mx-auto">
+                            ${appData.faq.length > 0 ? faqHtml : '<p class="text-center text-gray-500">Belum ada FAQ.</p>'}
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // DASHBOARD RENDERER (CRUD & VIEWS)
+        // ==========================================
+        function renderDashboardContent() {
+            const content = document.getElementById('main-content');
+            const isAdmin = currentUser.role === 'admin';
+
+            // Layout Dashboard (sudah punya padding khusus)
+            content.className = "max-w-7xl mx-auto p-4 md:p-8 w-full flex-1";
+
+            if (currentMenu === 'dash_home') {
+                content.innerHTML = `
+                    <div class="fade-in">
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Selamat datang, ${currentUser.name}!</h2>
+                        <p class="text-gray-600 mb-6">Pilih menu navigasi untuk memulai eksplorasi materi.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500"><h3 class="text-gray-500 text-sm">Total Courses</h3><p class="text-2xl font-bold">${appData.courses.length}</p></div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500"><h3 class="text-gray-500 text-sm">Tools Aktif</h3><p class="text-2xl font-bold">${appData.tools.length}</p></div>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            const entity = currentMenu; // courses, live, tools, etc.
+            const dataList = appData[entity] || [];
+
+            let html = `<div class="flex justify-between items-center mb-6 fade-in">
+                            <h2 class="text-2xl font-bold text-gray-800 capitalize">${entity}</h2>
+                            ${isAdmin ? `<button onclick="openCrudModal('${entity}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 shadow-sm"><i class="fas fa-plus mr-1"></i> Tambah</button>` : ''}
+                        </div>`;
+
+            html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">`;
+
+            if (dataList.length === 0) {
+                html += `<div class="col-span-full p-8 text-center bg-white rounded-xl shadow-sm border border-dashed border-gray-300 text-gray-500">Data belum tersedia.</div>`;
+            }
+
+            dataList.forEach(item => {
+                const encodedItem = encodeBase64Safe(JSON.stringify(item));
+
+                // Generic Card Template Builder
+                html += `<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition hover:shadow-md">`;
+
+                // Image/Thumbnail Header (if exists)
+                const imgUrl = item.thumbnail_url || item.preview_img || item.image_url || null;
+                if (imgUrl) html += `<img src="${imgUrl}" alt="Cover" class="w-full h-40 object-cover bg-gray-200" onerror="this.src='https://placehold.co/600x400/eeeeee/999999?text=Image'">`;
+
+                html += `<div class="p-5 flex-1 flex flex-col">`;
+
+                // Icon (Tools specific)
+                if (item.icon_url) html += `<img src="${item.icon_url}" class="w-12 h-12 rounded-lg mb-3 shadow-sm border border-gray-50">`;
+
+                // Title/Name
+                const title = item.title || item.topic || item.tool_name || item.template_name || item.product_name || item.question;
+                html += `<h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2">${title}</h3>`;
+
+                // Description/Subtitle
+                const desc = item.description || item.date_time || item.category || item.price || item.answer;
+                if (desc) html += `<p class="text-sm text-gray-600 mb-4 line-clamp-3">${desc}</p>`;
+
+                // Action Buttons
+                html += `<div class="mt-auto pt-4 flex gap-2 border-t border-gray-50">`;
+
+                // Participant View Button Actions
+                const linkUrl = item.content_url || item.meeting_link || item.access_link || item.download_link || item.buy_link;
+                if (linkUrl) {
+                    html += `<a href="${linkUrl}" target="_blank" class="flex-1 text-center bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition"><i class="fas fa-external-link-alt mr-1"></i> Buka</a>`;
+                } else if (!isAdmin) {
+                    html += `<span class="flex-1 text-center bg-gray-100 text-gray-400 py-2 rounded-lg text-sm font-bold">No Action</span>`;
+                }
+
+                // Admin Controls
+                if (isAdmin) {
+                    html += `<button onclick="openCrudModal('${entity}', '${encodedItem}')" class="flex-1 bg-amber-100 text-amber-700 py-2 rounded-lg text-sm font-bold hover:bg-amber-200 transition"><i class="fas fa-edit"></i></button>`;
+                    html += `<button onclick="deleteData('${entity}', '${item.id}')" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg text-sm font-bold hover:bg-red-200 transition"><i class="fas fa-trash"></i></button>`;
+                }
+
+                html += `</div></div></div>`;
+            });
+            html += `</div>`;
+            content.innerHTML = html;
+        }
+
+        // ==========================================
+        // DYNAMIC FORM BUILDER (ADMIN CRUD)
+        // ==========================================
+        let currentEditingEntity = null;
+        let currentEditingId = null;
+
+        function openCrudModal(entity, encodedData = null) {
+            currentEditingEntity = entity;
+            const titleEl = document.getElementById('crud-modal-title');
+            const fieldsContainer = document.getElementById('crud-form-fields');
+            fieldsContainer.innerHTML = '';
+
+            let data = {};
+            if (encodedData) {
+                data = JSON.parse(decodeBase64Safe(encodedData));
+                currentEditingId = data.id;
+                titleEl.innerText = `Edit Data ${entity.toUpperCase()}`;
+            } else {
+                currentEditingId = null;
+                titleEl.innerText = `Tambah Data ${entity.toUpperCase()}`;
+            }
+
+            const fields = schema[entity];
+            fields.forEach(f => {
+                const val = data[f.key] || '';
+                let inputHtml = '';
+                if (f.type === 'textarea') {
+                    inputHtml = `<textarea id="field_${f.key}" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50">${val}</textarea>`;
+                } else {
+                    inputHtml = `<input type="${f.type}" id="field_${f.key}" value="${val}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50">`;
+                }
+                fieldsContainer.innerHTML += `
+                    <div>
+                        <label class="block text-gray-700 text-sm font-bold mb-1">${f.label}</label>
+                        ${inputHtml}
+                    </div>
+                `;
+            });
+
+            document.getElementById('crud-modal').classList.remove('hidden');
+        }
+
+        function closeCrudModal() {
+            document.getElementById('crud-modal').classList.add('hidden');
+        }
+
+        async function submitCrudForm() {
+            const entity = currentEditingEntity;
+            const fields = schema[entity];
+            const payload = { id: currentEditingId || generateId() };
+
+            fields.forEach(f => {
+                payload[f.key] = document.getElementById(`field_${f.key}`).value;
+            });
+
+            closeCrudModal();
+            const action = currentEditingId ? 'update' : 'create';
+            await performDataOperation(entity, action, payload);
+        }
+
+        async function deleteData(entity, id) {
+            if (!confirm('Yakin ingin menghapus data ini?')) return;
+            await performDataOperation(entity, 'delete', { id: id });
+        }
+
+        // ==========================================
+        // OPTIMISTIC UI & BACKGROUND SYNC
+        // ==========================================
+        async function performDataOperation(entity, action, payload) {
+            // OPTIMISTIC UI UPDATE (INSTAN)
+            const backupList = JSON.parse(JSON.stringify(appData[entity]));
+
+            if (action === 'create') {
+                appData[entity].unshift(payload);
+            } else if (action === 'update') {
+                const idx = appData[entity].findIndex(x => x.id === payload.id);
+                if (idx > -1) appData[entity][idx] = payload;
+            } else if (action === 'delete') {
+                appData[entity] = appData[entity].filter(x => x.id !== payload.id);
+            }
+
+            renderDashboardContent();
+            showToast("Perubahan diterapkan seketika!", "success");
+
+            // LOGIKA PENGIRIMAN
+            if (IS_PREVIEW) {
+                console.log(`[Preview Mode] ${action} on ${entity}:`, payload);
+                localStorage.setItem('mockAppData', JSON.stringify(appData));
+            } else {
+                try {
+                    const reqBody = {
+                        action: action,
+                        sheetName: entity.charAt(0).toUpperCase() + entity.slice(1),
+                        data: payload
+                    };
+
+                    fetch(GAS_URL, {
+                        method: "POST",
+                        body: JSON.stringify(reqBody)
+                    }).then(res => res.json()).then(resJson => {
+                        if (resJson.status !== 'success') throw new Error(resJson.message);
+                        console.log("Background sync success!");
+                    }).catch(err => {
+                        throw err;
+                    });
+
+                } catch (err) {
+                    console.error("Background Sync Gagal:", err);
+                    showToast("Koneksi gagal! Rollback data...", "error");
+                    appData[entity] = backupList;
+                    renderDashboardContent();
+                }
+            }
+        }
+
+        async function fetchAllDataFromServer() {
+            try {
+                const res = await fetch(GAS_URL + "?action=readAll");
+                const data = await res.json();
+                if (data.status === 'success') {
+                    appData = { ...appData, ...data.data };
+                    if (currentUser) renderDashboardContent();
+                }
+            } catch (e) {
+                console.error("Gagal load data awal dari server", e);
+            }
+        }
+
+        // ==========================================
+        // AUTHENTICATION LOGIC
+        // ==========================================
+        function openLogin() { document.getElementById('login-modal').classList.remove('hidden'); }
+        function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-username').value;
+            const p = document.getElementById('login-password').value;
+            const btn = e.target.querySelector('button');
+            const originalBtnText = btn.innerText;
+            btn.innerText = "Memeriksa..."; btn.disabled = true;
+
+            if (IS_PREVIEW) {
+                setTimeout(() => {
+                    const user = appData.users.find(x => x.username === u && x.password === p);
+                    if (user) processLoginSuccess(user, btn, originalBtnText);
+                    else processLoginFail(btn, originalBtnText);
+                }, 500);
+            } else {
+                try {
+                    const res = await fetch(GAS_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'login', username: u, password: p })
+                    });
+                    const resJson = await res.json();
+                    if (resJson.status === 'success' && resJson.user) {
+                        processLoginSuccess(resJson.user, btn, originalBtnText);
+                    } else {
+                        processLoginFail(btn, originalBtnText, "Kredensial salah!");
+                    }
+                } catch (err) {
+                    processLoginFail(btn, originalBtnText, "Koneksi server gagal");
+                }
+            }
+        }
+
+        function processLoginSuccess(userData, btn, text) {
+            currentUser = userData;
+            localStorage.setItem('userSession', JSON.stringify(currentUser));
+            currentMenu = 'dash_home';
+            closeLogin();
+            showToast(`Selamat datang, ${currentUser.name}!`, "success");
+            btn.innerText = text; btn.disabled = false;
+            document.getElementById('login-form').reset();
+            renderApp();
+
+            // Scroll otomatis ke top saat masuk dashboard
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        function processLoginFail(btn, text, msg = "Username/Password salah!") {
+            showToast(msg, "error");
+            btn.innerText = text; btn.disabled = false;
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('userSession');
+            currentMenu = 'home';
+            showToast("Berhasil logout", "info");
+
+            // Reset layout agar kembali memenuhi layar untuk landing page
+            document.getElementById('main-content').className = "w-full flex-1";
+            renderApp();
+        }
+
+        // ==========================================
+        // UTILS
+        // ==========================================
+        function showToast(msg, type = "info") {
+            const tc = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = `toast toast-${type} fade-in`;
+            t.innerText = msg;
+            tc.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                setTimeout(() => t.remove(), 500);
+            }, 3000);
+        }
+
+    </script>
+</body>
+
+</html>
