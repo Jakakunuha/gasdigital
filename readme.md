@@ -1,7 +1,5 @@
         <!-- backend -->
 
-        const IS_PREVIEW = false;
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby0FHBt8HG0-Ny6KI-3szgejzuPiVZJOV9YzFcX-gzA4_hWNeo-oqhPlVsEUBycbqb5/exec";
 
         <!-- backend -->
 
