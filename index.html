@@ -1,430 +1,528 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GasDigital - Pakar Web App LMS</title>
-    <link rel="icon" type="image/x-icon"
-        href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-gIamokzNn0ivKhtEOMV0EhYdX6lpD6EPflkdo08eoqUQBdAM0AZXJYsaUaKNWVK1KU2msLuvM6hReZGofwUy_pinK0Sdd8HjmDJvfuppw_nvbkoI1w6X0kHIlpJylZ0YCkYxgN9S_pxaBP3d__K_N0jhgW0K_ZbaGuNr7-VxuWz44lGbAVBLlZ7J9BZ9/s320/google%20apps%20script.webp">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        /* CSS KHUSUS BLOGGER OVERRIDE & ANIMATIONS */
-        .blogger-top-navbar {
-            display: none !important;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GasDigital - Pakar Web App LMS</title>
+  <link rel="icon" type="image/x-icon"
+    href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-gIamokzNn0ivKhtEOMV0EhYdX6lpD6EPflkdo08eoqUQBdAM0AZXJYsaUaKNWVK1KU2msLuvM6hReZGofwUy_pinK0Sdd8HjmDJvfuppw_nvbkoI1w6X0kHIlpJylZ0YCkYxgN9S_pxaBP3d__K_N0jhgW0K_ZbaGuNr7-VxuWz44lGbAVBLlZ7J9BZ9/s320/google%20apps%20script.webp" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    /* CSS KHUSUS BLOGGER OVERRIDE & ANIMATIONS */
+    .blogger-top-navbar {
+      display: none !important;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", sans-serif;
+      background-color: #f3f4f6;
+    }
 
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
 
-        .slide-up {
-            animation: slideUp 0.3s ease-in-out;
-        }
+    .slide-up {
+      animation: slideUp 0.3s ease-in-out;
+    }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
 
-            to {
-                opacity: 1;
-            }
-        }
+      to {
+        opacity: 1;
+      }
+    }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
 
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
 
-        /* Toast Styles */
-        #toast-container {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            z-index: 9999;
-        }
+    /* Toast Styles */
+    #toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 9999;
+    }
 
-        .toast {
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: opacity 0.5s;
-        }
+    .toast {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: opacity 0.5s;
+    }
 
-        .toast-success {
-            background-color: #10b981;
-        }
+    .toast-success {
+      background-color: #10b981;
+    }
 
-        .toast-error {
-            background-color: #ef4444;
-        }
+    .toast-error {
+      background-color: #ef4444;
+    }
 
-        .toast-info {
-            background-color: #3b82f6;
-        }
+    .toast-info {
+      background-color: #3b82f6;
+    }
 
-        /* Mobile Scroll Hide */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
+    /* Mobile Scroll Hide */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
 
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
 
-        /* Smooth Scrolling untuk Main Container */
-        main {
-            scroll-behavior: smooth;
-        }
-    </style>
+    /* Smooth Scrolling untuk Main Container */
+    main {
+      scroll-behavior: smooth;
+    }
+  </style>
 </head>
 
 <body class="text-gray-800 antialiased h-screen flex flex-col overflow-hidden">
+  <!-- INITIAL LOADING TEXT (WILL BE HIDDEN) -->
+  <div id="init-loader"
+    class="fixed inset-0 bg-white z-50 flex items-center justify-center font-bold text-2xl text-blue-600">
+    Menyiapkan Lingkungan Aplikasi...
+  </div>
 
-    <!-- INITIAL LOADING TEXT (WILL BE HIDDEN) -->
-    <div id="init-loader"
-        class="fixed inset-0 bg-white z-50 flex items-center justify-center font-bold text-2xl text-blue-600">
-        Menyiapkan Lingkungan Aplikasi...
-    </div>
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
 
-    <!-- TOAST CONTAINER -->
-    <div id="toast-container"></div>
+  <!-- TOP NAVIGATION (GLOBAL & DESKTOP) -->
+  <header class="bg-white shadow-sm z-40 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Logo -->
+        <a href="#home" class="flex items-center cursor-pointer">
+          <i class="fas fa-graduation-cap text-blue-600 text-3xl mr-2"></i>
+          <span class="font-bold text-xl tracking-tight text-gray-900">GasDigital</span>
+        </a>
 
-    <!-- TOP NAVIGATION (GLOBAL & DESKTOP) -->
-    <header class="bg-white shadow-sm z-40 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <a href="#home" class="flex items-center cursor-pointer">
-                    <i class="fas fa-graduation-cap text-blue-600 text-3xl mr-2"></i>
-                    <span class="font-bold text-xl tracking-tight text-gray-900">GasDigital</span>
-                </a>
+        <!-- Desktop Public Nav (Sembunyi saat Login) -->
+        <nav id="desktop-public-nav" class="hidden md:flex space-x-8 items-center">
+          <a href="#home" class="text-gray-600 hover:text-blue-600 font-medium transition">Beranda</a>
+          <a href="#about" class="text-gray-600 hover:text-blue-600 font-medium transition">Tentang</a>
+          <a href="#portofolio" class="text-gray-600 hover:text-blue-600 font-medium transition">Portofolio</a>
+          <a href="#pricing" class="text-gray-600 hover:text-blue-600 font-medium transition">Harga</a>
+          <a href="#articles" class="text-gray-600 hover:text-blue-600 font-medium transition">Artikel</a>
+          <a href="#faq" class="text-gray-600 hover:text-blue-600 font-medium transition">FAQ</a>
+          <button onclick="openLogin()"
+            class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition">
+            Login LMS
+          </button>
+        </nav>
 
-                <!-- Desktop Public Nav (Sembunyi saat Login) -->
-                <nav id="desktop-public-nav" class="hidden md:flex space-x-8 items-center">
-                    <a href="#home" class="text-gray-600 hover:text-blue-600 font-medium transition">Beranda</a>
-                    <a href="#about" class="text-gray-600 hover:text-blue-600 font-medium transition">Tentang</a>
-                    <a href="#portofolio"
-                        class="text-gray-600 hover:text-blue-600 font-medium transition">Portofolio</a>
-                    <a href="#pricing" class="text-gray-600 hover:text-blue-600 font-medium transition">Harga</a>
-                    <a href="#articles" class="text-gray-600 hover:text-blue-600 font-medium transition">Artikel</a>
-                    <a href="#faq" class="text-gray-600 hover:text-blue-600 font-medium transition">FAQ</a>
-                    <button onclick="openLogin()"
-                        class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition">Login
-                        LMS</button>
-                </nav>
-
-                <!-- Tombol Login Mobile (Sembunyi saat Login) -->
-                <div id="mobile-login-btn" class="md:hidden">
-                    <button onclick="openLogin()"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-sm">Login</button>
-                </div>
-
-                <!-- User Profile / Logout (Muncul saat Login) -->
-                <div id="user-menu" class="hidden items-center space-x-4">
-                    <div class="text-sm text-right hidden md:block">
-                        <p id="user-name-display" class="font-bold text-gray-900"></p>
-                        <p id="user-role-display" class="text-gray-500 uppercase text-xs"></p>
-                    </div>
-                    <button onclick="handleLogout()"
-                        class="bg-red-50 text-red-600 px-4 py-2 rounded-md font-medium hover:bg-red-100 transition text-sm">Logout</button>
-                </div>
-            </div>
+        <!-- Tombol Login Mobile (Sembunyi saat Login) -->
+        <div id="mobile-login-btn" class="md:hidden">
+          <button onclick="openLogin()"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-sm">
+            Login
+          </button>
         </div>
-    </header>
 
-    <!-- MAIN APP LAYOUT (FLEX) -->
-    <div class="flex flex-1 overflow-hidden relative">
-
-        <!-- SIDEBAR (DESKTOP DASHBOARD ONLY) -->
-        <aside id="desktop-sidebar"
-            class="hidden flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner">
-            <div class="p-4 border-b border-gray-100">
-                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Menu Panel</h2>
-            </div>
-            <nav id="sidebar-nav-container" class="flex-1 p-4 space-y-1">
-                <!-- Injected via JS -->
-            </nav>
-        </aside>
-
-        <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 overflow-y-auto bg-gray-50 relative flex flex-col">
-            <div class="w-full flex-1" id="main-content">
-                <!-- Content injected here -->
-            </div>
-
-            <!-- BLOGGER SPACER ANCHOR (WAJIB UNTUK MOBILE AGAR KONTEN TIDAK TERTUTUP BOTTOM NAV) -->
-            <div id="mobile-spacer" class="pb-24 block clear-both content-none hidden"></div>
-
-            <!-- GLOBAL FOOTER -->
-            <footer id="global-footer" class="bg-white border-t border-gray-200 mt-auto">
-                <div class="max-w-7xl mx-auto py-6 px-4 text-center text-gray-500 text-sm">
-                    &copy; <span id="year"></span> GasDigital LMS. Hak Cipta Dilindungi.
-                </div>
-            </footer>
-        </main>
+        <!-- User Profile / Logout (Muncul saat Login) -->
+        <div id="user-menu" class="hidden items-center space-x-4">
+          <div class="text-sm text-right hidden md:block">
+            <p id="user-name-display" class="font-bold text-gray-900"></p>
+            <p id="user-role-display" class="text-gray-500 uppercase text-xs"></p>
+          </div>
+          <button onclick="handleLogout()"
+            class="bg-red-50 text-red-600 px-4 py-2 rounded-md font-medium hover:bg-red-100 transition text-sm">
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <!-- MOBILE BOTTOM NAVIGATION (DASHBOARD ONLY) -->
-    <nav id="mobile-bottom-nav"
-        class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+  <!-- MAIN APP LAYOUT (FLEX) -->
+  <div class="flex flex-1 overflow-hidden relative">
+    <!-- SIDEBAR (DESKTOP DASHBOARD ONLY) -->
+    <aside id="desktop-sidebar"
+      class="hidden flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner">
+      <div class="p-4 border-b border-gray-100">
+        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">
+          Menu Panel
+        </h2>
+      </div>
+      <nav id="sidebar-nav-container" class="flex-1 p-4 space-y-1">
         <!-- Injected via JS -->
-    </nav>
+      </nav>
+    </aside>
 
-    <!-- LOGIN MODAL -->
-    <div id="login-modal"
-        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden slide-up">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">Masuk ke LMS</h2>
-                    <button onclick="closeLogin()" class="text-gray-400 hover:text-gray-600"><i
-                            class="fas fa-times text-xl"></i></button>
-                </div>
-                <form id="login-form" onsubmit="handleLogin(event)">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                        <input type="text" id="login-username" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-gray-50 transition">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                        <input type="password" id="login-password" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-gray-50 transition">
-                    </div>
-                    <button type="submit"
-                        class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg">
-                        Login Sekarang
-                    </button>
-                </form>
-                <div class="mt-4 text-center text-sm text-gray-500" id="login-hint">
-                    (Masukkan username dan password, jika belum punya hubungi admin untuk akses)
-                </div>
-            </div>
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 overflow-y-auto bg-gray-50 relative flex flex-col">
+      <div class="w-full flex-1" id="main-content">
+        <!-- Content injected here -->
+      </div>
+
+      <!-- BLOGGER SPACER ANCHOR (WAJIB UNTUK MOBILE AGAR KONTEN TIDAK TERTUTUP BOTTOM NAV) -->
+      <div id="mobile-spacer" class="pb-24 block clear-both content-none hidden"></div>
+
+      <!-- GLOBAL FOOTER -->
+      <footer id="global-footer" class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 text-center text-gray-500 text-sm">
+          &copy; <span id="year"></span> GasDigital LMS. Hak Cipta Dilindungi.
         </div>
-    </div>
+      </footer>
+    </main>
+  </div>
 
-    <!-- MODAL FORM CRUD -->
-    <div id="crud-modal"
-        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden slide-up flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b flex justify-between items-center bg-gray-50">
-                <h2 id="crud-modal-title" class="text-xl font-bold text-gray-900">Form Data</h2>
-                <button onclick="closeCrudModal()" class="text-gray-400 hover:text-gray-600"><i
-                        class="fas fa-times text-xl"></i></button>
-            </div>
-            <div class="p-4 overflow-y-auto flex-1">
-                <form id="crud-form">
-                    <div id="crud-form-fields" class="space-y-4"></div>
-                </form>
-            </div>
-            <div class="p-4 border-t bg-gray-50 flex justify-end">
-                <button type="button" onclick="closeCrudModal()"
-                    class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300">Batal</button>
-                <button type="button" onclick="submitCrudForm()"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Simpan
-                    Data</button>
-            </div>
+  <!-- MOBILE BOTTOM NAVIGATION (DASHBOARD ONLY) -->
+  <nav id="mobile-bottom-nav"
+    class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    <!-- Injected via JS -->
+  </nav>
+
+  <!-- LOGIN MODAL -->
+  <div id="login-modal"
+    class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden slide-up">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-900">Masuk ke LMS</h2>
+          <button onclick="closeLogin()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-xl"></i>
+          </button>
         </div>
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+            <input type="text" id="login-username" required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-gray-50 transition" />
+          </div>
+          <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+            <input type="password" id="login-password" required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-gray-50 transition" />
+          </div>
+          <button type="submit"
+            class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg">
+            Login Sekarang
+          </button>
+        </form>
+        <div class="mt-4 text-center text-sm text-gray-500" id="login-hint">
+          (Masukkan username dan password, jika belum punya hubungi admin
+          untuk akses)
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // ==========================================
-        // CONFIGURATION & DATABASE CONNECTION
-        // ==========================================
-        const IS_PREVIEW = false;
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby0FHBt8HG0-Ny6KI-3szgejzuPiVZJOV9YzFcX-gzA4_hWNeo-oqhPlVsEUBycbqb5/exec";
-        // ==========================================
-        // ENKRIPSI STRING AMAN (MENCEGAH ERROR HTML INJECTION)
-        // ==========================================
-        const encodeBase64Safe = (str) => btoa(encodeURIComponent(str || ""));
-        const decodeBase64Safe = (str) => decodeURIComponent(atob(str || ""));
-        const generateId = () => 'ID_' + Math.random().toString(36).substr(2, 9);
+  <!-- MODAL FORM CRUD -->
+  <div id="crud-modal"
+    class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden slide-up flex flex-col max-h-[90vh]">
+      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+        <h2 id="crud-modal-title" class="text-xl font-bold text-gray-900">
+          Form Data
+        </h2>
+        <button onclick="closeCrudModal()" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <div class="p-4 overflow-y-auto flex-1">
+        <form id="crud-form">
+          <div id="crud-form-fields" class="space-y-4"></div>
+        </form>
+      </div>
+      <div class="p-4 border-t bg-gray-50 flex justify-end">
+        <button type="button" onclick="closeCrudModal()"
+          class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300">
+          Batal
+        </button>
+        <button type="button" onclick="submitCrudForm()"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">
+          Simpan Data
+        </button>
+      </div>
+    </div>
+  </div>
 
-        // ==========================================
-        // APP STATE & DATA MOCKING
-        // ==========================================
-        let currentUser = null;
-        let currentMenu = 'home';
+  <script>
+    // ==========================================
+    // CONFIGURATION & DATABASE CONNECTION
+    // ==========================================
+    const IS_PREVIEW = false;
+    const GAS_URL =
+      "https://script.google.com/macros/s/AKfycby0FHBt8HG0-Ny6KI-3szgejzuPiVZJOV9YzFcX-gzA4_hWNeo-oqhPlVsEUBycbqb5/exec";
+    // ==========================================
+    // ENKRIPSI STRING AMAN (MENCEGAH ERROR HTML INJECTION)
+    // ==========================================
+    const encodeBase64Safe = (str) => btoa(encodeURIComponent(str || ""));
+    const decodeBase64Safe = (str) => decodeURIComponent(atob(str || ""));
+    const generateId = () => "ID_" + Math.random().toString(36).substr(2, 9);
 
-        let appData = {
-            courses: [], live: [], tools: [], templates: [], market: [], users: []
-        };
+    // ==========================================
+    // APP STATE & DATA MOCKING
+    // ==========================================
+    let currentUser = null;
+    let currentMenu = "home";
 
-        const dashboardMenus = [
-            { id: 'dash_home', icon: 'fa-chart-pie', label: 'Dashboard' },
-            { id: 'courses', icon: 'fa-video', label: 'Courses' },
-            { id: 'live', icon: 'fa-satellite-dish', label: 'Live' },
-            { id: 'tools', icon: 'fa-wrench', label: 'Tools' },
-            { id: 'templates', icon: 'fa-file-code', label: 'Templates' },
-            { id: 'market', icon: 'fa-store', label: 'Market' }
+    let appData = {
+      courses: [],
+      live: [],
+      tools: [],
+      templates: [],
+      market: [],
+      users: [],
+    };
+
+    const dashboardMenus = [
+      { id: "dash_home", icon: "fa-chart-pie", label: "Dashboard" },
+      { id: "courses", icon: "fa-video", label: "Courses" },
+      { id: "live", icon: "fa-satellite-dish", label: "Live" },
+      { id: "tools", icon: "fa-wrench", label: "Tools" },
+      { id: "templates", icon: "fa-file-code", label: "Templates" },
+      { id: "market", icon: "fa-store", label: "Market" },
+    ];
+
+    const schema = {
+      courses: [
+        { key: "title", label: "Judul Course", type: "text" },
+        { key: "description", label: "Deskripsi", type: "textarea" },
+        { key: "thumbnail_url", label: "URL Thumbnail", type: "text" },
+        { key: "content_url", label: "URL Video/Konten", type: "text" },
+      ],
+      live: [
+        { key: "topic", label: "Topik Live", type: "text" },
+        {
+          key: "date_time",
+          label: "Waktu (Misal: 10 Okt, 19:00)",
+          type: "text",
+        },
+        { key: "meeting_link", label: "Link Zoom/GMeet", type: "text" },
+      ],
+      tools: [
+        { key: "tool_name", label: "Nama Tool", type: "text" },
+        { key: "description", label: "Deskripsi Singkat", type: "textarea" },
+        { key: "access_link", label: "Link Akses", type: "text" },
+        { key: "icon_url", label: "URL Icon Image", type: "text" },
+      ],
+      templates: [
+        { key: "template_name", label: "Nama Template", type: "text" },
+        { key: "category", label: "Kategori", type: "text" },
+        { key: "download_link", label: "Link Download", type: "text" },
+        { key: "preview_img", label: "URL Gambar Preview", type: "text" },
+        { key: "demo_link", label: "Link Demo", type: "text" },
+      ],
+      market: [
+        { key: "product_name", label: "Nama Produk", type: "text" },
+        { key: "price", label: "Harga (Rp)", type: "text" },
+        { key: "description", label: "Deskripsi", type: "textarea" },
+        { key: "buy_link", label: "Link Checkout", type: "text" },
+        { key: "image_url", label: "URL Gambar Produk", type: "text" },
+        { key: "demo_link", label: "Link Demo", type: "text" },
+      ],
+    };
+
+    window.onload = () => {
+      document.getElementById("year").innerText = new Date().getFullYear();
+
+      if (IS_PREVIEW) {
+        appData.users = [
+          {
+            id: "1",
+            username: "admin",
+            password: "123",
+            role: "admin",
+            name: "Super Admin",
+          },
+          {
+            id: "2",
+            username: "user",
+            password: "123",
+            role: "peserta",
+            name: "Peserta Aktif",
+          },
+        ];
+        appData.courses = [
+          {
+            id: "c1",
+            title: "Mastering Apps Script",
+            description: "Belajar membuat backend tanpa server.",
+            thumbnail_url:
+              "https://placehold.co/600x400/2563eb/white?text=Apps+Script",
+            content_url: "#",
+          },
+        ];
+        appData.live = [
+          {
+            id: "l1",
+            topic: "Q&A Web App Development",
+            date_time: "Besok, 19:30 WIB",
+            meeting_link: "#",
+          },
+        ];
+        appData.tools = [
+          {
+            id: "t1",
+            tool_name: "CSS Generator",
+            description: "Buat bayangan kotak dengan mudah",
+            access_link: "#",
+            icon_url: "https://placehold.co/100/10b981/white?text=CSS",
+          },
+        ];
+        appData.templates = [
+          {
+            id: "tmp1",
+            template_name: "Landing Page SaaS",
+            category: "Web Template",
+            download_link: "#",
+            preview_img: "https://placehold.co/600x400/8b5cf6/white?text=Template+SaaS",
+            demo_link: "https://example.com"
+          }
+        ];
+        appData.market = [
+          {
+            id: "mkt1",
+            product_name: "Premium Admin Dashboard",
+            price: "150000",
+            description: "Dashboard admin lengkap dengan chart.",
+            buy_link: "#",
+            image_url: "https://placehold.co/600x400/ec4899/white?text=Dashboard",
+            demo_link: "https://example.com"
+          }
         ];
 
-        const schema = {
-            courses: [
-                { key: 'title', label: 'Judul Course', type: 'text' },
-                { key: 'description', label: 'Deskripsi', type: 'textarea' },
-                { key: 'thumbnail_url', label: 'URL Thumbnail', type: 'text' },
-                { key: 'content_url', label: 'URL Video/Konten', type: 'text' },
-            ],
-            live: [
-                { key: 'topic', label: 'Topik Live', type: 'text' },
-                { key: 'date_time', label: 'Waktu (Misal: 10 Okt, 19:00)', type: 'text' },
-                { key: 'meeting_link', label: 'Link Zoom/GMeet', type: 'text' },
-            ],
-            tools: [
-                { key: 'tool_name', label: 'Nama Tool', type: 'text' },
-                { key: 'description', label: 'Deskripsi Singkat', type: 'textarea' },
-                { key: 'access_link', label: 'Link Akses', type: 'text' },
-                { key: 'icon_url', label: 'URL Icon Image', type: 'text' },
-            ],
-            templates: [
-                { key: 'template_name', label: 'Nama Template', type: 'text' },
-                { key: 'category', label: 'Kategori', type: 'text' },
-                { key: 'download_link', label: 'Link Download', type: 'text' },
-                { key: 'preview_img', label: 'URL Gambar Preview', type: 'text' },
-            ],
-            market: [
-                { key: 'product_name', label: 'Nama Produk', type: 'text' },
-                { key: 'price', label: 'Harga (Rp)', type: 'text' },
-                { key: 'description', label: 'Deskripsi', type: 'textarea' },
-                { key: 'buy_link', label: 'Link Checkout', type: 'text' },
-                { key: 'image_url', label: 'URL Gambar Produk', type: 'text' },
-            ]
+        const localMock = localStorage.getItem("mockAppData");
+        if (localMock) appData = JSON.parse(localMock);
+      }
+
+      const savedSession = localStorage.getItem("userSession");
+      if (savedSession) {
+        currentUser = JSON.parse(savedSession);
+        currentMenu = "dash_home";
+      } else {
+        currentUser = null;
+        currentMenu = "home";
+      }
+
+      if (!IS_PREVIEW) fetchAllDataFromServer();
+
+      setTimeout(() => {
+        document.getElementById("init-loader").classList.add("hidden");
+        renderApp();
+      }, 300);
+    };
+
+    function renderApp() {
+      const isPublic = !currentUser;
+
+      const publicNav = document.getElementById("desktop-public-nav");
+      const mobileLoginBtn = document.getElementById("mobile-login-btn");
+      const userMenu = document.getElementById("user-menu");
+      const sidebar = document.getElementById("desktop-sidebar");
+      const bottomNav = document.getElementById("mobile-bottom-nav");
+      const mobileSpacer = document.getElementById("mobile-spacer");
+      const mainContent = document.getElementById("main-content");
+
+      if (isPublic) {
+        publicNav.className = "hidden md:flex space-x-8 items-center";
+        mobileLoginBtn.className = "md:hidden block";
+        userMenu.className = "hidden";
+        sidebar.className = "hidden";
+        bottomNav.className = "hidden";
+        mobileSpacer.className = "hidden";
+        mainContent.className = "w-full flex-1"; // Full width 100% untuk landing page
+
+        if (
+          currentMenu.startsWith("dash_") ||
+          ["courses", "live", "tools", "templates", "market"].includes(
+            currentMenu,
+          )
+        ) {
+          currentMenu = "home";
+        }
+      } else {
+        publicNav.className = "hidden";
+        mobileLoginBtn.className = "hidden";
+        userMenu.className = "flex items-center space-x-4";
+        sidebar.className =
+          "hidden md:flex flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner";
+        bottomNav.className =
+          "flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]";
+        mobileSpacer.className =
+          "pb-24 block clear-both content-none md:hidden";
+        mainContent.className = "max-w-7xl mx-auto p-4 md:p-8 w-full flex-1"; // Padded and constrained untuk dashboard
+      }
+
+      if (currentUser) {
+        document.getElementById("user-name-display").innerText =
+          currentUser.name;
+        document.getElementById("user-role-display").innerText =
+          currentUser.role;
+        renderNavigationLinks();
+        renderDashboardContent();
+      } else {
+        renderPublicContent();
+      }
+    }
+
+    function renderNavigationLinks() {
+      const sideNav = document.getElementById("sidebar-nav-container");
+      const bottomNav = document.getElementById("mobile-bottom-nav");
+      sideNav.innerHTML = "";
+      bottomNav.innerHTML = "";
+
+      dashboardMenus.forEach((menu) => {
+        const isActive = currentMenu === menu.id;
+
+        const sBtn = document.createElement("button");
+        sBtn.className = `w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`;
+        sBtn.innerHTML = `<i class="fas ${menu.icon} w-6 text-lg ${isActive ? "text-blue-600" : "text-gray-400"}"></i> <span>${menu.label}</span>`;
+        sBtn.onclick = () => {
+          currentMenu = menu.id;
+          renderApp();
         };
+        sideNav.appendChild(sBtn);
 
-        window.onload = () => {
-            document.getElementById('year').innerText = new Date().getFullYear();
-
-            if (IS_PREVIEW) {
-                appData.users = [
-                    { id: '1', username: 'admin', password: '123', role: 'admin', name: 'Super Admin' },
-                    { id: '2', username: 'user', password: '123', role: 'peserta', name: 'Peserta Aktif' }
-                ];
-                appData.courses = [{ id: 'c1', title: 'Mastering Apps Script', description: 'Belajar membuat backend tanpa server.', thumbnail_url: 'https://placehold.co/600x400/2563eb/white?text=Apps+Script', content_url: '#' }];
-                appData.live = [{ id: 'l1', topic: 'Q&A Web App Development', date_time: 'Besok, 19:30 WIB', meeting_link: '#' }];
-                appData.tools = [{ id: 't1', tool_name: 'CSS Generator', description: 'Buat bayangan kotak dengan mudah', access_link: '#', icon_url: 'https://placehold.co/100/10b981/white?text=CSS' }];
-
-                const localMock = localStorage.getItem('mockAppData');
-                if (localMock) appData = JSON.parse(localMock);
-            }
-
-            const savedSession = localStorage.getItem('userSession');
-            if (savedSession) {
-                currentUser = JSON.parse(savedSession);
-                currentMenu = 'dash_home';
-            } else {
-                currentUser = null;
-                currentMenu = 'home';
-            }
-
-            if (!IS_PREVIEW) fetchAllDataFromServer();
-
-            setTimeout(() => {
-                document.getElementById('init-loader').classList.add('hidden');
-                renderApp();
-            }, 300);
+        const bBtn = document.createElement("button");
+        bBtn.className = `flex flex-col items-center justify-center w-full h-full text-xs transition ${isActive ? "text-blue-600" : "text-gray-500"}`;
+        bBtn.innerHTML = `<i class="fas ${menu.icon} text-xl mb-1"></i> <span class="truncate w-full text-center px-1" style="font-size: 0.65rem;">${menu.label}</span>`;
+        bBtn.onclick = () => {
+          currentMenu = menu.id;
+          renderApp();
         };
+        bottomNav.appendChild(bBtn);
+      });
+    }
 
-        function renderApp() {
-            const isPublic = !currentUser;
+    function navigate(page) {
+      currentMenu = page;
+      renderApp();
+    }
 
-            const publicNav = document.getElementById('desktop-public-nav');
-            const mobileLoginBtn = document.getElementById('mobile-login-btn');
-            const userMenu = document.getElementById('user-menu');
-            const sidebar = document.getElementById('desktop-sidebar');
-            const bottomNav = document.getElementById('mobile-bottom-nav');
-            const mobileSpacer = document.getElementById('mobile-spacer');
-            const mainContent = document.getElementById('main-content');
+    function renderPublicContent() {
+      const content = document.getElementById("main-content");
 
-            if (isPublic) {
-                publicNav.className = "hidden md:flex space-x-8 items-center";
-                mobileLoginBtn.className = "md:hidden block";
-                userMenu.className = "hidden";
-                sidebar.className = "hidden";
-                bottomNav.className = "hidden";
-                mobileSpacer.className = "hidden";
-                mainContent.className = "w-full flex-1"; // Full width 100% untuk landing page
+      // JIKA HALAMAN PUBLIK SUDAH DI-RENDER, KITA TIDAK PERLU RE-RENDER
+      if (content.querySelector("#public-landing-page")) {
+        return; // Stop disini
+      }
 
-                if (currentMenu.startsWith('dash_') || ['courses', 'live', 'tools', 'templates', 'market'].includes(currentMenu)) {
-                    currentMenu = 'home';
-                }
-            } else {
-                publicNav.className = "hidden";
-                mobileLoginBtn.className = "hidden";
-                userMenu.className = "flex items-center space-x-4";
-                sidebar.className = "hidden md:flex flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner";
-                bottomNav.className = "flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]";
-                mobileSpacer.className = "pb-24 block clear-both content-none md:hidden";
-                mainContent.className = "max-w-7xl mx-auto p-4 md:p-8 w-full flex-1"; // Padded and constrained untuk dashboard
-            }
-
-            if (currentUser) {
-                document.getElementById('user-name-display').innerText = currentUser.name;
-                document.getElementById('user-role-display').innerText = currentUser.role;
-                renderNavigationLinks();
-                renderDashboardContent();
-            } else {
-                renderPublicContent();
-            }
-        }
-
-        function renderNavigationLinks() {
-            const sideNav = document.getElementById('sidebar-nav-container');
-            const bottomNav = document.getElementById('mobile-bottom-nav');
-            sideNav.innerHTML = ''; bottomNav.innerHTML = '';
-
-            dashboardMenus.forEach(menu => {
-                const isActive = currentMenu === menu.id;
-
-                const sBtn = document.createElement('button');
-                sBtn.className = `w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`;
-                sBtn.innerHTML = `<i class="fas ${menu.icon} w-6 text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}"></i> <span>${menu.label}</span>`;
-                sBtn.onclick = () => { currentMenu = menu.id; renderApp(); };
-                sideNav.appendChild(sBtn);
-
-                const bBtn = document.createElement('button');
-                bBtn.className = `flex flex-col items-center justify-center w-full h-full text-xs transition ${isActive ? 'text-blue-600' : 'text-gray-500'}`;
-                bBtn.innerHTML = `<i class="fas ${menu.icon} text-xl mb-1"></i> <span class="truncate w-full text-center px-1" style="font-size: 0.65rem;">${menu.label}</span>`;
-                bBtn.onclick = () => { currentMenu = menu.id; renderApp(); };
-                bottomNav.appendChild(bBtn);
-            });
-        }
-
-        function navigate(page) {
-            currentMenu = page;
-            renderApp();
-        }
-
-        function renderPublicContent() {
-            const content = document.getElementById('main-content');
-
-            // JIKA HALAMAN PUBLIK SUDAH DI-RENDER, KITA TIDAK PERLU RE-RENDER
-            if (content.querySelector('#public-landing-page')) {
-                return; // Stop disini
-            }
-
-            // JIKA BELUM RENDER SAMA SEKALI, BANGUN SELURUH HTML
-            content.innerHTML = `
+      // JIKA BELUM RENDER SAMA SEKALI, BANGUN SELURUH HTML
+      content.innerHTML = `
                 <div id="public-landing-page" class="w-full fade-in pb-10">
                     
                     <!-- 1. SECTION BERANDA (HERO DESAIN MODERN 2-KOLOM TIPE SAAS) -->
@@ -841,14 +939,14 @@
                     </section>
                 </div>
             `;
-        }
+    }
 
-        function renderDashboardContent() {
-            const content = document.getElementById('main-content');
-            const isAdmin = currentUser.role === 'admin';
+    function renderDashboardContent() {
+      const content = document.getElementById("main-content");
+      const isAdmin = currentUser.role === "admin";
 
-            if (currentMenu === 'dash_home') {
-                content.innerHTML = `
+      if (currentMenu === "dash_home") {
+        content.innerHTML = `
                     <div class="fade-in">
                         <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Selamat datang, ${currentUser.name}!</h2>
                         <p class="text-gray-600 mb-6">Pilih menu navigasi untuk memulai eksplorasi materi.</p>
@@ -860,286 +958,377 @@
                             <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500"><h3 class="text-gray-500 text-sm">Jadwal Live</h3><p class="text-2xl font-bold">${appData.live.length}</p></div>
                         </div>
                     </div>`;
-                return;
-            }
+        return;
+      }
 
-            const entity = currentMenu;
-            const dataList = appData[entity] || [];
+      const entity = currentMenu;
+      const dataList = appData[entity] || [];
 
-            let html = `<div class="flex justify-between items-center mb-6 fade-in">
+      let html = `<div class="flex justify-between items-center mb-6 fade-in">
                             <h2 class="text-2xl font-bold text-gray-800 capitalize">${entity}</h2>
-                            ${isAdmin ? `<button onclick="openCrudModal('${entity}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 shadow-sm"><i class="fas fa-plus mr-1"></i> Tambah</button>` : ''}
+                            ${isAdmin ? `<button onclick="openCrudModal('${entity}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 shadow-sm"><i class="fas fa-plus mr-1"></i> Tambah</button>` : ""}
                         </div>`;
 
-            html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">`;
+      html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">`;
 
-            if (dataList.length === 0) {
-                html += `<div class="col-span-full p-8 text-center bg-white rounded-xl shadow-sm border border-dashed border-gray-300 text-gray-500">Data belum tersedia.</div>`;
-            }
+      if (dataList.length === 0) {
+        html += `<div class="col-span-full p-8 text-center bg-white rounded-xl shadow-sm border border-dashed border-gray-300 text-gray-500">Data belum tersedia.</div>`;
+      }
 
-            dataList.forEach(item => {
-                const encodedItem = encodeBase64Safe(JSON.stringify(item));
+      dataList.forEach((item) => {
+        const encodedItem = encodeBase64Safe(JSON.stringify(item));
 
-                html += `<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition hover:shadow-md">`;
+        html += `<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition hover:shadow-md">`;
 
-                const imgUrl = item.thumbnail_url || item.preview_img || item.image_url || null;
-                if (imgUrl) html += `<img src="${imgUrl}" alt="Cover" class="w-full h-40 object-cover bg-gray-200" onerror="this.src='https://placehold.co/600x400/eeeeee/999999?text=Image'">`;
+        const imgUrl =
+          item.thumbnail_url || item.preview_img || item.image_url || null;
+        if (imgUrl)
+          html += `<img src="${imgUrl}" alt="Cover" class="w-full h-40 object-cover bg-gray-200" onerror="this.src='https://placehold.co/600x400/eeeeee/999999?text=Image'">`;
 
-                html += `<div class="p-5 flex-1 flex flex-col">`;
+        html += `<div class="p-5 flex-1 flex flex-col">`;
 
-                if (item.icon_url) html += `<img src="${item.icon_url}" class="w-12 h-12 rounded-lg mb-3 shadow-sm border border-gray-50">`;
+        if (item.icon_url)
+          html += `<img src="${item.icon_url}" class="w-12 h-12 rounded-lg mb-3 shadow-sm border border-gray-50">`;
 
-                const title = item.title || item.topic || item.tool_name || item.template_name || item.product_name || item.question;
-                html += `<h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2">${title}</h3>`;
+        const title =
+          item.title ||
+          item.topic ||
+          item.tool_name ||
+          item.template_name ||
+          item.product_name ||
+          item.question;
+        html += `<h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2">${title}</h3>`;
 
-                const desc = item.description || item.date_time || item.category || item.price || item.answer;
-                if (desc) html += `<p class="text-sm text-gray-600 mb-4 line-clamp-3">${desc}</p>`;
+        const desc =
+          item.description ||
+          item.date_time ||
+          item.category ||
+          item.price ||
+          item.answer;
+        if (desc)
+          html += `<p class="text-sm text-gray-600 mb-4 line-clamp-3">${desc}</p>`;
 
-                html += `<div class="mt-auto pt-4 flex gap-2 border-t border-gray-50">`;
+        html += `<div class="mt-auto pt-4 flex gap-2 border-t border-gray-50">`;
 
-                const linkUrl = item.content_url || item.meeting_link || item.access_link || item.download_link || item.buy_link;
-                if (linkUrl) {
-                    html += `<a href="${linkUrl}" target="_blank" class="flex-1 text-center bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition"><i class="fas fa-external-link-alt mr-1"></i> Buka</a>`;
-                } else if (!isAdmin) {
-                    html += `<span class="flex-1 text-center bg-gray-100 text-gray-400 py-2 rounded-lg text-sm font-bold">No Action</span>`;
-                }
+        const linkUrl =
+          item.content_url ||
+          item.meeting_link ||
+          item.access_link ||
+          item.download_link ||
+          item.buy_link;
+        const demoUrl = item.demo_link || "#";
 
-                if (isAdmin) {
-                    html += `<button onclick="openCrudModal('${entity}', '${encodedItem}')" class="flex-1 bg-amber-100 text-amber-700 py-2 rounded-lg text-sm font-bold hover:bg-amber-200"><i class="fas fa-edit"></i></button>`;
-                    html += `<button onclick="deleteData('${entity}', '${item.id}')" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg text-sm font-bold hover:bg-red-200"><i class="fas fa-trash"></i></button>`;
-                }
-
-                html += `</div></div></div>`;
-            });
-            html += `</div>`;
-            content.innerHTML = html;
+        if (linkUrl) {
+          html += `<a href="${linkUrl}" target="_blank" class="flex-1 text-center bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition flex items-center justify-center"><i class="fas fa-external-link-alt mr-1"></i> Buka</a>`;
+        } else if (
+          !isAdmin &&
+          entity !== "templates" &&
+          entity !== "market"
+        ) {
+          html += `<span class="flex-1 text-center bg-gray-100 text-gray-400 py-2 rounded-lg text-sm font-bold flex items-center justify-center">No Action</span>`;
         }
 
-        let currentEditingEntity = null;
-        let currentEditingId = null;
+        if (entity === "templates" || entity === "market") {
+          html += `<a href="${demoUrl}" target="_blank" class="flex-1 text-center bg-emerald-50 text-emerald-700 py-2 rounded-lg text-sm font-bold hover:bg-emerald-100 transition flex items-center justify-center"><i class="fas fa-play mr-1"></i> Demo</a>`;
+        }
 
-        function openCrudModal(entity, encodedData = null) {
-            currentEditingEntity = entity;
-            const titleEl = document.getElementById('crud-modal-title');
-            const fieldsContainer = document.getElementById('crud-form-fields');
-            fieldsContainer.innerHTML = '';
+        if (isAdmin) {
+          html += `<button onclick="openCrudModal('${entity}', '${encodedItem}')" class="flex-1 bg-amber-100 text-amber-700 py-2 rounded-lg text-sm font-bold hover:bg-amber-200 flex items-center justify-center"><i class="fas fa-edit"></i></button>`;
+          html += `<button onclick="deleteData('${entity}', '${item.id}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-lg text-sm font-bold hover:bg-red-200 flex items-center justify-center"><i class="fas fa-trash"></i></button>`;
+        }
 
-            let data = {};
-            if (encodedData) {
-                data = JSON.parse(decodeBase64Safe(encodedData));
-                currentEditingId = data.id;
-                titleEl.innerText = `Edit Data ${entity.toUpperCase()}`;
-            } else {
-                currentEditingId = null;
-                titleEl.innerText = `Tambah Data ${entity.toUpperCase()}`;
-            }
+        html += `</div></div></div>`;
+      });
+      html += `</div>`;
+      content.innerHTML = html;
+    }
 
-            const fields = schema[entity];
-            fields.forEach(f => {
-                const val = data[f.key] || '';
-                let inputHtml = '';
-                if (f.type === 'textarea') {
-                    inputHtml = `<textarea id="field_${f.key}" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">${val}</textarea>`;
-                } else {
-                    inputHtml = `<input type="${f.type}" id="field_${f.key}" value="${val}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">`;
-                }
-                fieldsContainer.innerHTML += `
+    let currentEditingEntity = null;
+    let currentEditingId = null;
+
+    function openCrudModal(entity, encodedData = null) {
+      currentEditingEntity = entity;
+      const titleEl = document.getElementById("crud-modal-title");
+      const fieldsContainer = document.getElementById("crud-form-fields");
+      fieldsContainer.innerHTML = "";
+
+      let data = {};
+      if (encodedData) {
+        data = JSON.parse(decodeBase64Safe(encodedData));
+        currentEditingId = data.id;
+        titleEl.innerText = `Edit Data ${entity.toUpperCase()}`;
+      } else {
+        currentEditingId = null;
+        titleEl.innerText = `Tambah Data ${entity.toUpperCase()}`;
+      }
+
+      const fields = schema[entity];
+      fields.forEach((f) => {
+        const val = data[f.key] || "";
+        let inputHtml = "";
+        if (f.type === "textarea") {
+          inputHtml = `<textarea id="field_${f.key}" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">${val}</textarea>`;
+        } else {
+          inputHtml = `<input type="${f.type}" id="field_${f.key}" value="${val}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">`;
+        }
+        fieldsContainer.innerHTML += `
                     <div>
                         <label class="block text-gray-700 text-sm font-bold mb-1">${f.label}</label>
                         ${inputHtml}
                     </div>
                 `;
-            });
+      });
 
-            document.getElementById('crud-modal').classList.remove('hidden');
+      document.getElementById("crud-modal").classList.remove("hidden");
+    }
+
+    function closeCrudModal() {
+      document.getElementById("crud-modal").classList.add("hidden");
+    }
+
+    async function submitCrudForm() {
+      const entity = currentEditingEntity;
+      const fields = schema[entity];
+      const payload = { id: currentEditingId || generateId() };
+
+      fields.forEach((f) => {
+        payload[f.key] = document.getElementById(`field_${f.key}`).value;
+      });
+
+      closeCrudModal();
+      const action = currentEditingId ? "update" : "create";
+      await performDataOperation(entity, action, payload);
+    }
+
+    async function deleteData(entity, id) {
+      if (!confirm("Yakin ingin menghapus data ini?")) return;
+      await performDataOperation(entity, "delete", { id: id });
+    }
+
+    async function performDataOperation(entity, action, payload) {
+      const backupList = JSON.parse(JSON.stringify(appData[entity]));
+
+      if (action === "create") {
+        appData[entity].unshift(payload);
+      } else if (action === "update") {
+        const idx = appData[entity].findIndex((x) => x.id === payload.id);
+        if (idx > -1) appData[entity][idx] = payload;
+      } else if (action === "delete") {
+        appData[entity] = appData[entity].filter((x) => x.id !== payload.id);
+      }
+
+      // Langsung update layar agar pengguna melihat perubahan (Optimistic UI)
+      renderDashboardContent();
+
+      showToast("Perubahan diterapkan seketika!", "success");
+
+      if (IS_PREVIEW) {
+        console.log(`[Preview Mode] ${action} on ${entity}:`, payload);
+        localStorage.setItem("mockAppData", JSON.stringify(appData));
+      } else {
+        try {
+          const reqBody = {
+            action: action,
+            sheetName: entity.charAt(0).toUpperCase() + entity.slice(1),
+            data: payload,
+          };
+
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify(reqBody),
+          });
+
+          if (!res.ok) throw new Error("HTTP error " + res.status);
+
+          const resJson = await res.json();
+          if (resJson.status !== "success") throw new Error(resJson.message);
+          console.log("Background sync success!");
+        } catch (err) {
+          console.warn("Background Sync Gagal:", err.message);
+          showToast("Koneksi gagal! Rollback data...", "error");
+          appData[entity] = backupList;
+          renderDashboardContent();
         }
+      }
+    }
 
-        function closeCrudModal() {
-            document.getElementById('crud-modal').classList.add('hidden');
+    async function fetchAllDataFromServer() {
+      try {
+        const res = await fetch(GAS_URL + "?action=readAll");
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+
+        const data = await res.json();
+        if (data.status === "success") {
+          appData = { ...appData, ...data.data };
+          // PERBAIKAN: Selalu renderApp() setelah fetch selesai, entah itu public/dashboard
+          renderApp();
+        } else {
+          throw new Error(
+            data.message || "Server tidak mengembalikan status success",
+          );
         }
+      } catch (e) {
+        console.warn("Gagal load data awal dari server:", e.message);
+        showToast(
+          "Gagal terhubung ke Database. Menampilkan mode simulasi...",
+          "error",
+        );
 
-        async function submitCrudForm() {
-            const entity = currentEditingEntity;
-            const fields = schema[entity];
-            const payload = { id: currentEditingId || generateId() };
-
-            fields.forEach(f => {
-                payload[f.key] = document.getElementById(`field_${f.key}`).value;
-            });
-
-            closeCrudModal();
-            const action = currentEditingId ? 'update' : 'create';
-            await performDataOperation(entity, action, payload);
+        // FALLBACK KE MOCK DATA AGAR UI TETAP JALAN MESKIPUN URL GAS ERROR / BELUM DI-DEPLOY
+        if (appData.courses.length === 0) {
+          appData.users = [
+            {
+              id: "1",
+              username: "admin",
+              password: "123",
+              role: "admin",
+              name: "Super Admin",
+            },
+            {
+              id: "2",
+              username: "user",
+              password: "123",
+              role: "peserta",
+              name: "Peserta Aktif",
+            },
+          ];
+          appData.courses = [
+            {
+              id: "c1",
+              title: "Mastering Apps Script",
+              description: "Belajar membuat backend tanpa server.",
+              thumbnail_url:
+                "https://placehold.co/600x400/2563eb/white?text=Apps+Script",
+              content_url: "#",
+            },
+          ];
+          appData.live = [
+            {
+              id: "l1",
+              topic: "Q&A Web App Development",
+              date_time: "Besok, 19:30 WIB",
+              meeting_link: "#",
+            },
+          ];
+          appData.tools = [
+            {
+              id: "t1",
+              tool_name: "CSS Generator",
+              description: "Buat bayangan kotak dengan mudah",
+              access_link: "#",
+              icon_url: "https://placehold.co/100/10b981/white?text=CSS",
+            },
+          ];
+          renderApp();
         }
+      }
+    }
 
-        async function deleteData(entity, id) {
-            if (!confirm('Yakin ingin menghapus data ini?')) return;
-            await performDataOperation(entity, 'delete', { id: id });
+    function openLogin() {
+      document.getElementById("login-modal").classList.remove("hidden");
+    }
+    function closeLogin() {
+      document.getElementById("login-modal").classList.add("hidden");
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById("login-username").value;
+      const p = document.getElementById("login-password").value;
+      const btn = e.target.querySelector("button");
+      const originalBtnText = btn.innerText;
+      btn.innerText = "Memeriksa...";
+      btn.disabled = true;
+
+      if (IS_PREVIEW) {
+        setTimeout(() => {
+          const user = appData.users.find(
+            (x) => x.username === u && x.password === p,
+          );
+          if (user) processLoginSuccess(user, btn, originalBtnText);
+          else processLoginFail(btn, originalBtnText);
+        }, 500);
+      } else {
+        try {
+          const res = await fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              action: "login",
+              username: u,
+              password: p,
+            }),
+          });
+
+          if (!res.ok) throw new Error("HTTP error " + res.status);
+
+          const resJson = await res.json();
+          if (resJson.status === "success" && resJson.user) {
+            processLoginSuccess(resJson.user, btn, originalBtnText);
+          } else {
+            processLoginFail(btn, originalBtnText, "Kredensial salah!");
+          }
+        } catch (err) {
+          console.warn("Login fetch error:", err.message);
+
+          // FALLBACK UNTUK LOGIN KE MODE SIMULASI JIKA SERVER ERROR
+          const fallbackUser = appData.users.find(
+            (x) => x.username === u && x.password === p,
+          );
+          if (fallbackUser) {
+            showToast(
+              "Koneksi server gagal. Menggunakan login mode simulasi...",
+              "info",
+            );
+            processLoginSuccess(fallbackUser, btn, originalBtnText);
+          } else {
+            processLoginFail(
+              btn,
+              originalBtnText,
+              "Koneksi server gagal. Periksa URL GAS Anda.",
+            );
+          }
         }
+      }
+    }
 
-        async function performDataOperation(entity, action, payload) {
-            const backupList = JSON.parse(JSON.stringify(appData[entity]));
+    function processLoginSuccess(userData, btn, text) {
+      currentUser = userData;
+      localStorage.setItem("userSession", JSON.stringify(currentUser));
+      currentMenu = "dash_home";
+      closeLogin();
+      showToast(`Selamat datang, ${currentUser.name}!`, "success");
+      btn.innerText = text;
+      btn.disabled = false;
+      document.getElementById("login-form").reset();
+      renderApp();
+    }
 
-            if (action === 'create') {
-                appData[entity].unshift(payload);
-            } else if (action === 'update') {
-                const idx = appData[entity].findIndex(x => x.id === payload.id);
-                if (idx > -1) appData[entity][idx] = payload;
-            } else if (action === 'delete') {
-                appData[entity] = appData[entity].filter(x => x.id !== payload.id);
-            }
+    function processLoginFail(btn, text, msg = "Username/Password salah!") {
+      showToast(msg, "error");
+      btn.innerText = text;
+      btn.disabled = false;
+    }
 
-            // Langsung update layar agar pengguna melihat perubahan (Optimistic UI)
-            renderDashboardContent();
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem("userSession");
+      currentMenu = "home";
+      showToast("Berhasil logout", "info");
+      renderApp();
+    }
 
-            showToast("Perubahan diterapkan seketika!", "success");
-
-            if (IS_PREVIEW) {
-                console.log(`[Preview Mode] ${action} on ${entity}:`, payload);
-                localStorage.setItem('mockAppData', JSON.stringify(appData));
-            } else {
-                try {
-                    const reqBody = {
-                        action: action,
-                        sheetName: entity.charAt(0).toUpperCase() + entity.slice(1),
-                        data: payload
-                    };
-
-                    const res = await fetch(GAS_URL, {
-                        method: "POST",
-                        body: JSON.stringify(reqBody)
-                    });
-
-                    if (!res.ok) throw new Error("HTTP error " + res.status);
-
-                    const resJson = await res.json();
-                    if (resJson.status !== 'success') throw new Error(resJson.message);
-                    console.log("Background sync success!");
-
-                } catch (err) {
-                    console.warn("Background Sync Gagal:", err.message);
-                    showToast("Koneksi gagal! Rollback data...", "error");
-                    appData[entity] = backupList;
-                    renderDashboardContent();
-                }
-            }
-        }
-
-        async function fetchAllDataFromServer() {
-            try {
-                const res = await fetch(GAS_URL + "?action=readAll");
-                if (!res.ok) throw new Error("HTTP error " + res.status);
-
-                const data = await res.json();
-                if (data.status === 'success') {
-                    appData = { ...appData, ...data.data };
-                    // PERBAIKAN: Selalu renderApp() setelah fetch selesai, entah itu public/dashboard
-                    renderApp();
-                } else {
-                    throw new Error(data.message || "Server tidak mengembalikan status success");
-                }
-            } catch (e) {
-                console.warn("Gagal load data awal dari server:", e.message);
-                showToast("Gagal terhubung ke Database. Menampilkan mode simulasi...", "error");
-
-                // FALLBACK KE MOCK DATA AGAR UI TETAP JALAN MESKIPUN URL GAS ERROR / BELUM DI-DEPLOY
-                if (appData.courses.length === 0) {
-                    appData.users = [
-                        { id: '1', username: 'admin', password: '123', role: 'admin', name: 'Super Admin' },
-                        { id: '2', username: 'user', password: '123', role: 'peserta', name: 'Peserta Aktif' }
-                    ];
-                    appData.courses = [{ id: 'c1', title: 'Mastering Apps Script', description: 'Belajar membuat backend tanpa server.', thumbnail_url: 'https://placehold.co/600x400/2563eb/white?text=Apps+Script', content_url: '#' }];
-                    appData.live = [{ id: 'l1', topic: 'Q&A Web App Development', date_time: 'Besok, 19:30 WIB', meeting_link: '#' }];
-                    appData.tools = [{ id: 't1', tool_name: 'CSS Generator', description: 'Buat bayangan kotak dengan mudah', access_link: '#', icon_url: 'https://placehold.co/100/10b981/white?text=CSS' }];
-                    renderApp();
-                }
-            }
-        }
-
-        function openLogin() { document.getElementById('login-modal').classList.remove('hidden'); }
-        function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('login-username').value;
-            const p = document.getElementById('login-password').value;
-            const btn = e.target.querySelector('button');
-            const originalBtnText = btn.innerText;
-            btn.innerText = "Memeriksa..."; btn.disabled = true;
-
-            if (IS_PREVIEW) {
-                setTimeout(() => {
-                    const user = appData.users.find(x => x.username === u && x.password === p);
-                    if (user) processLoginSuccess(user, btn, originalBtnText);
-                    else processLoginFail(btn, originalBtnText);
-                }, 500);
-            } else {
-                try {
-                    const res = await fetch(GAS_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'login', username: u, password: p })
-                    });
-
-                    if (!res.ok) throw new Error("HTTP error " + res.status);
-
-                    const resJson = await res.json();
-                    if (resJson.status === 'success' && resJson.user) {
-                        processLoginSuccess(resJson.user, btn, originalBtnText);
-                    } else {
-                        processLoginFail(btn, originalBtnText, "Kredensial salah!");
-                    }
-                } catch (err) {
-                    console.warn("Login fetch error:", err.message);
-
-                    // FALLBACK UNTUK LOGIN KE MODE SIMULASI JIKA SERVER ERROR
-                    const fallbackUser = appData.users.find(x => x.username === u && x.password === p);
-                    if (fallbackUser) {
-                        showToast("Koneksi server gagal. Menggunakan login mode simulasi...", "info");
-                        processLoginSuccess(fallbackUser, btn, originalBtnText);
-                    } else {
-                        processLoginFail(btn, originalBtnText, "Koneksi server gagal. Periksa URL GAS Anda.");
-                    }
-                }
-            }
-        }
-
-        function processLoginSuccess(userData, btn, text) {
-            currentUser = userData;
-            localStorage.setItem('userSession', JSON.stringify(currentUser));
-            currentMenu = 'dash_home';
-            closeLogin();
-            showToast(`Selamat datang, ${currentUser.name}!`, "success");
-            btn.innerText = text; btn.disabled = false;
-            document.getElementById('login-form').reset();
-            renderApp();
-        }
-
-        function processLoginFail(btn, text, msg = "Username/Password salah!") {
-            showToast(msg, "error");
-            btn.innerText = text; btn.disabled = false;
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('userSession');
-            currentMenu = 'home';
-            showToast("Berhasil logout", "info");
-            renderApp();
-        }
-
-        function showToast(msg, type = "info") {
-            const tc = document.getElementById('toast-container');
-            const t = document.createElement('div');
-            t.className = `toast toast-${type} fade-in`;
-            t.innerText = msg;
-            tc.appendChild(t);
-            setTimeout(() => {
-                t.style.opacity = '0';
-                setTimeout(() => t.remove(), 500);
-            }, 3000);
-        }
-
-    </script>
+    function showToast(msg, type = "info") {
+      const tc = document.getElementById("toast-container");
+      const t = document.createElement("div");
+      t.className = `toast toast-${type} fade-in`;
+      t.innerText = msg;
+      tc.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = "0";
+        setTimeout(() => t.remove(), 500);
+      }, 3000);
+    }
+  </script>
 </body>
 
 </html>
