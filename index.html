@@ -999,11 +999,15 @@
           item.question;
         html += `<h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2">${title}</h3>`;
 
+        if (item.price) {
+          const formattedPrice = isNaN(item.price) ? item.price : "Rp " + parseInt(item.price).toLocaleString("id-ID");
+          html += `<div class="text-emerald-600 font-extrabold mb-2">${formattedPrice}</div>`;
+        }
+
         const desc =
           item.description ||
           item.date_time ||
           item.category ||
-          item.price ||
           item.answer;
         if (desc)
           html += `<p class="text-sm text-gray-600 mb-4 line-clamp-3">${desc}</p>`;
@@ -1016,10 +1020,10 @@
           item.access_link ||
           item.download_link ||
           item.buy_link;
-        const demoUrl = item.demo_link || "#";
+        const demoUrl = item.demo_link;
 
         if (linkUrl) {
-          html += `<a href="${linkUrl}" target="_blank" class="flex-1 text-center bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition flex items-center justify-center"><i class="fas fa-external-link-alt mr-1"></i> Buka</a>`;
+          html += `<a href="${linkUrl}" target="_blank" class="flex-1 text-center bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition flex items-center justify-center"><i class="fas fa-external-link-alt mr-1"></i> Download</a>`;
         } else if (
           !isAdmin &&
           entity !== "templates" &&
@@ -1029,7 +1033,14 @@
         }
 
         if (entity === "templates" || entity === "market") {
-          html += `<a href="${demoUrl}" target="_blank" class="flex-1 text-center bg-emerald-50 text-emerald-700 py-2 rounded-lg text-sm font-bold hover:bg-emerald-100 transition flex items-center justify-center"><i class="fas fa-play mr-1"></i> Demo</a>`;
+          if (demoUrl && demoUrl.trim() !== "" && demoUrl !== "#") {
+            html += `<a href="${demoUrl}" target="_blank" class="flex-1 text-center bg-emerald-50 text-emerald-700 py-2 rounded-lg text-sm font-bold hover:bg-emerald-100 transition flex items-center justify-center"><i class="fas fa-play mr-1"></i> Demo</a>`;
+          } else {
+            if (!linkUrl && !isAdmin) {
+              // If neither Buka nor Demo is available, and not admin, at least show No Action
+              html += `<span class="flex-1 text-center bg-gray-100 text-gray-400 py-2 rounded-lg text-sm font-bold flex items-center justify-center">No Action</span>`;
+            }
+          }
         }
 
         if (isAdmin) {
