@@ -5,8 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GasDigital - Pakar Web App LMS</title>
-  <link rel="icon" type="image/x-icon"
-    href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-gIamokzNn0ivKhtEOMV0EhYdX6lpD6EPflkdo08eoqUQBdAM0AZXJYsaUaKNWVK1KU2msLuvM6hReZGofwUy_pinK0Sdd8HjmDJvfuppw_nvbkoI1w6X0kHIlpJylZ0YCkYxgN9S_pxaBP3d__K_N0jhgW0K_ZbaGuNr7-VxuWz44lGbAVBLlZ7J9BZ9/s320/google%20apps%20script.webp" />
+  <link rel="icon" type="image/x-icon" href="https://www.google.com/s2/favicons?domain=gasdigital.web.id&sz=64" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
@@ -19,7 +22,20 @@
       margin: 0;
       padding: 0;
       font-family: "Inter", sans-serif;
-      background-color: #f3f4f6;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    a,
+    button,
+    input,
+    textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button,
+    a {
+      touch-action: manipulation;
     }
 
     .fade-in {
@@ -61,12 +77,14 @@
     }
 
     .toast {
-      padding: 1rem;
+      padding: 0.875rem 1rem;
       border-radius: 0.5rem;
       margin-bottom: 0.5rem;
       color: white;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 35px rgba(15, 23, 42, 0.16);
       transition: opacity 0.5s;
+      font-weight: 700;
+      font-size: 0.875rem;
     }
 
     .toast-success {
@@ -95,47 +113,88 @@
     main {
       scroll-behavior: smooth;
     }
+
+    .section-shell {
+      max-width: 80rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .section-shell {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .section-shell {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+    }
   </style>
 </head>
 
 <body class="text-gray-800 antialiased h-screen flex flex-col overflow-hidden">
   <!-- INITIAL LOADING TEXT (WILL BE HIDDEN) -->
-  <div id="init-loader"
-    class="fixed inset-0 bg-white z-50 flex items-center justify-center font-bold text-2xl text-blue-600">
-    Menyiapkan Lingkungan Aplikasi...
+  <div id="init-loader" class="fixed inset-0 bg-white z-50 flex items-center justify-center p-6">
+    <div class="text-center">
+      <div
+        class="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-lg bg-blue-600 text-white shadow-lg shadow-blue-600/20">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <p class="font-extrabold text-xl text-slate-950">Menyiapkan GasDigital...</p>
+      <p class="mt-1 text-sm font-medium text-slate-500">Memuat halaman dan data LMS</p>
+    </div>
   </div>
 
   <!-- TOAST CONTAINER -->
   <div id="toast-container"></div>
 
   <!-- TOP NAVIGATION (GLOBAL & DESKTOP) -->
-  <header class="bg-white shadow-sm z-40 relative">
+  <header class="bg-white/95 backdrop-blur border-b border-slate-200 z-40 relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         <!-- Logo -->
-        <a href="#home" class="flex items-center cursor-pointer">
-          <i class="fas fa-graduation-cap text-blue-600 text-3xl mr-2"></i>
-          <span class="font-bold text-xl tracking-tight text-gray-900">GasDigital</span>
+        <a href="#home" class="flex items-center gap-3 cursor-pointer">
+          <span class="grid h-10 w-10 place-items-center rounded-lg bg-blue-600 text-white shadow-sm">
+            <i class="fas fa-graduation-cap text-lg"></i>
+          </span>
+          <span class="font-extrabold text-xl tracking-tight text-slate-950">GasDigital</span>
         </a>
 
         <!-- Desktop Public Nav (Sembunyi saat Login) -->
-        <nav id="desktop-public-nav" class="hidden md:flex space-x-8 items-center">
-          <a href="#home" class="text-gray-600 hover:text-blue-600 font-medium transition">Beranda</a>
-          <a href="#about" class="text-gray-600 hover:text-blue-600 font-medium transition">Tentang</a>
-          <a href="#portofolio" class="text-gray-600 hover:text-blue-600 font-medium transition">Portofolio</a>
-          <a href="#pricing" class="text-gray-600 hover:text-blue-600 font-medium transition">Harga</a>
-          <a href="#articles" class="text-gray-600 hover:text-blue-600 font-medium transition">Artikel</a>
-          <a href="#faq" class="text-gray-600 hover:text-blue-600 font-medium transition">FAQ</a>
+        <nav id="desktop-public-nav" class="hidden md:flex gap-1 items-center">
+          <a href="#home"
+            class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Beranda</a>
+          <a href="#about"
+            class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Tentang</a>
+          <a href="#portofolio"
+            class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Portofolio</a>
+          <a href="#pricing"
+            class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Harga</a>
+          <a href="#articles"
+            class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Artikel</a>
+          <a href="#faq"
+            class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">FAQ</a>
           <button onclick="openLogin()"
-            class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-blue-700 transition">
+            class="ml-2 bg-blue-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700 transition shadow-sm shadow-blue-600/20">
             Login LMS
           </button>
         </nav>
 
         <!-- Tombol Login Mobile (Sembunyi saat Login) -->
-        <div id="mobile-login-btn" class="md:hidden">
+        <div id="mobile-login-btn" class="md:hidden flex items-center gap-2">
+          <button onclick="toggleMobilePublicNav()"
+            class="h-10 w-10 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition"
+            aria-label="Buka menu">
+            <i class="fas fa-bars"></i>
+          </button>
           <button onclick="openLogin()"
-            class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-sm">
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition text-sm">
             Login
           </button>
         </div>
@@ -144,13 +203,30 @@
         <div id="user-menu" class="hidden items-center space-x-4">
           <div class="text-sm text-right hidden md:block">
             <p id="user-name-display" class="font-bold text-gray-900"></p>
-            <p id="user-role-display" class="text-gray-500 uppercase text-xs"></p>
+            <p id="user-role-display" class="text-slate-500 uppercase text-xs font-bold"></p>
           </div>
           <button onclick="handleLogout()"
-            class="bg-red-50 text-red-600 px-4 py-2 rounded-md font-medium hover:bg-red-100 transition text-sm">
-            Logout
+            class="inline-flex items-center gap-2 bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold hover:bg-red-100 transition text-sm">
+            <i class="fas fa-right-from-bracket"></i>
+            <span class="hidden sm:inline">Logout</span>
           </button>
         </div>
+      </div>
+    </div>
+    <div id="mobile-public-nav" class="hidden md:hidden border-t border-slate-200 bg-white">
+      <div class="section-shell py-3 grid gap-1">
+        <a onclick="toggleMobilePublicNav(false)" href="#home"
+          class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Beranda</a>
+        <a onclick="toggleMobilePublicNav(false)" href="#about"
+          class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Tentang</a>
+        <a onclick="toggleMobilePublicNav(false)" href="#portofolio"
+          class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Portofolio</a>
+        <a onclick="toggleMobilePublicNav(false)" href="#pricing"
+          class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Harga</a>
+        <a onclick="toggleMobilePublicNav(false)" href="#articles"
+          class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Artikel</a>
+        <a onclick="toggleMobilePublicNav(false)" href="#faq"
+          class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">FAQ</a>
       </div>
     </div>
   </header>
@@ -158,9 +234,8 @@
   <!-- MAIN APP LAYOUT (FLEX) -->
   <div class="flex flex-1 overflow-hidden relative">
     <!-- SIDEBAR (DESKTOP DASHBOARD ONLY) -->
-    <aside id="desktop-sidebar"
-      class="hidden flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner">
-      <div class="p-4 border-b border-gray-100">
+    <aside id="desktop-sidebar" class="hidden flex-col w-72 bg-white border-r border-slate-200 overflow-y-auto z-30">
+      <div class="p-4 border-b border-slate-200">
         <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">
           Menu Panel
         </h2>
@@ -171,7 +246,7 @@
     </aside>
 
     <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 overflow-y-auto bg-gray-50 relative flex flex-col">
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative flex flex-col">
       <div class="w-full flex-1" id="main-content">
         <!-- Content injected here -->
       </div>
@@ -180,8 +255,8 @@
       <div id="mobile-spacer" class="pb-24 block clear-both content-none hidden"></div>
 
       <!-- GLOBAL FOOTER -->
-      <footer id="global-footer" class="bg-white border-t border-gray-200 mt-auto">
-        <div class="max-w-7xl mx-auto py-6 px-4 text-center text-gray-500 text-sm">
+      <footer id="global-footer" class="bg-white border-t border-slate-200 mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 text-center text-slate-500 text-sm">
           &copy; <span id="year"></span> GasDigital LMS. Hak Cipta Dilindungi.
         </div>
       </footer>
@@ -190,38 +265,42 @@
 
   <!-- MOBILE BOTTOM NAVIGATION (DASHBOARD ONLY) -->
   <nav id="mobile-bottom-nav"
-    class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 justify-around items-center h-16 shadow-[0_-12px_30px_rgba(15,23,42,0.08)]">
     <!-- Injected via JS -->
   </nav>
 
   <!-- LOGIN MODAL -->
   <div id="login-modal"
-    class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden slide-up">
-      <div class="p-6">
+    class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 fade-in">
+    <div class="bg-white rounded-lg shadow-2xl shadow-slate-950/20 w-full max-w-md overflow-hidden slide-up">
+      <div class="p-6 md:p-8">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-gray-900">Masuk ke LMS</h2>
-          <button onclick="closeLogin()" class="text-gray-400 hover:text-gray-600">
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-wider text-blue-600">Member Area</p>
+            <h2 class="text-2xl font-extrabold text-slate-950">Masuk ke LMS</h2>
+          </div>
+          <button onclick="closeLogin()"
+            class="grid h-9 w-9 place-items-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700">
             <i class="fas fa-times text-xl"></i>
           </button>
         </div>
         <form id="login-form" onsubmit="handleLogin(event)">
           <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+            <label class="block text-slate-700 text-sm font-bold mb-2">Username</label>
             <input type="text" id="login-username" required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-gray-50 transition" />
+              class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50 transition" />
           </div>
           <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+            <label class="block text-slate-700 text-sm font-bold mb-2">Password</label>
             <input type="password" id="login-password" required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-gray-50 transition" />
+              class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50 transition" />
           </div>
           <button type="submit"
-            class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg">
+            class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow-md shadow-blue-600/20 hover:shadow-lg">
             Login Sekarang
           </button>
         </form>
-        <div class="mt-4 text-center text-sm text-gray-500" id="login-hint">
+        <div class="mt-4 text-center text-sm text-slate-500" id="login-hint">
           (Masukkan username dan password, jika belum punya hubungi admin
           untuk akses)
         </div>
@@ -231,13 +310,15 @@
 
   <!-- MODAL FORM CRUD -->
   <div id="crud-modal"
-    class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 fade-in">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden slide-up flex flex-col max-h-[90vh]">
-      <div class="p-4 border-b flex justify-between items-center bg-gray-50">
-        <h2 id="crud-modal-title" class="text-xl font-bold text-gray-900">
+    class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 fade-in">
+    <div
+      class="bg-white rounded-lg shadow-2xl shadow-slate-950/20 w-full max-w-lg overflow-hidden slide-up flex flex-col max-h-[90vh]">
+      <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <h2 id="crud-modal-title" class="text-xl font-extrabold text-slate-950">
           Form Data
         </h2>
-        <button onclick="closeCrudModal()" class="text-gray-400 hover:text-gray-600">
+        <button onclick="closeCrudModal()"
+          class="grid h-9 w-9 place-items-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
@@ -246,13 +327,13 @@
           <div id="crud-form-fields" class="space-y-4"></div>
         </form>
       </div>
-      <div class="p-4 border-t bg-gray-50 flex justify-end">
+      <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
         <button type="button" onclick="closeCrudModal()"
-          class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300">
+          class="mr-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg font-bold hover:bg-slate-50">
           Batal
         </button>
         <button type="button" onclick="submitCrudForm()"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700">
           Simpan Data
         </button>
       </div>
@@ -295,6 +376,7 @@
       { id: "tools", icon: "fa-wrench", label: "Tools" },
       { id: "templates", icon: "fa-file-code", label: "Templates" },
       { id: "market", icon: "fa-store", label: "Market" },
+      { id: "users", icon: "fa-users-gear", label: "Users", adminOnly: true },
     ];
 
     const schema = {
@@ -334,6 +416,12 @@
         { key: "image_url", label: "URL Gambar Produk", type: "text" },
         { key: "demo_link", label: "Link Demo", type: "text" },
       ],
+      users: [
+        { key: "name", label: "Nama Lengkap", type: "text" },
+        { key: "username", label: "Username", type: "text" },
+        { key: "password", label: "Password", type: "text" },
+        { key: "role", label: "Role (admin/peserta)", type: "text" },
+      ],
     };
 
     window.onload = () => {
@@ -362,7 +450,7 @@
             title: "Mastering Apps Script",
             description: "Belajar membuat backend tanpa server.",
             thumbnail_url:
-              "https://placehold.co/600x400/2563eb/white?text=Apps+Script",
+              "https://unsplash.com/photos/0chr85LZuTc/download?force=true&w=900",
             content_url: "#",
           },
         ];
@@ -380,7 +468,7 @@
             tool_name: "CSS Generator",
             description: "Buat bayangan kotak dengan mudah",
             access_link: "#",
-            icon_url: "https://placehold.co/100/10b981/white?text=CSS",
+            icon_url: "https://cdn.simpleicons.org/css3/10b981",
           },
         ];
         appData.templates = [
@@ -389,7 +477,7 @@
             template_name: "Landing Page SaaS",
             category: "Web Template",
             download_link: "#",
-            preview_img: "https://placehold.co/600x400/8b5cf6/white?text=Template+SaaS",
+            preview_img: "https://unsplash.com/photos/m_HRfLhgABo/download?force=true&w=900",
             demo_link: "https://example.com"
           }
         ];
@@ -400,7 +488,7 @@
             price: "150000",
             description: "Dashboard admin lengkap dengan chart.",
             buy_link: "#",
-            image_url: "https://placehold.co/600x400/ec4899/white?text=Dashboard",
+            image_url: "https://unsplash.com/photos/ic9Ns3_90yw/download?force=true&w=900",
             demo_link: "https://example.com"
           }
         ];
@@ -431,6 +519,7 @@
 
       const publicNav = document.getElementById("desktop-public-nav");
       const mobileLoginBtn = document.getElementById("mobile-login-btn");
+      const mobilePublicNav = document.getElementById("mobile-public-nav");
       const userMenu = document.getElementById("user-menu");
       const sidebar = document.getElementById("desktop-sidebar");
       const bottomNav = document.getElementById("mobile-bottom-nav");
@@ -438,8 +527,9 @@
       const mainContent = document.getElementById("main-content");
 
       if (isPublic) {
-        publicNav.className = "hidden md:flex space-x-8 items-center";
-        mobileLoginBtn.className = "md:hidden block";
+        publicNav.className = "hidden md:flex gap-1 items-center";
+        mobileLoginBtn.className = "md:hidden flex items-center gap-2";
+        mobilePublicNav.className = "hidden md:hidden border-t border-slate-200 bg-white";
         userMenu.className = "hidden";
         sidebar.className = "hidden";
         bottomNav.className = "hidden";
@@ -448,7 +538,7 @@
 
         if (
           currentMenu.startsWith("dash_") ||
-          ["courses", "live", "tools", "templates", "market"].includes(
+          ["courses", "live", "tools", "templates", "market", "users"].includes(
             currentMenu,
           )
         ) {
@@ -457,11 +547,12 @@
       } else {
         publicNav.className = "hidden";
         mobileLoginBtn.className = "hidden";
+        mobilePublicNav.className = "hidden md:hidden border-t border-slate-200 bg-white";
         userMenu.className = "flex items-center space-x-4";
         sidebar.className =
-          "hidden md:flex flex-col w-64 bg-white border-r border-gray-200 overflow-y-auto z-30 shadow-inner";
+          "hidden md:flex flex-col w-72 bg-white border-r border-slate-200 overflow-y-auto z-30";
         bottomNav.className =
-          "flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 justify-around items-center h-16 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]";
+          "flex md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 justify-around items-center h-16 shadow-[0_-12px_30px_rgba(15,23,42,0.08)]";
         mobileSpacer.className =
           "pb-24 block clear-both content-none md:hidden";
         mainContent.className = "max-w-7xl mx-auto p-4 md:p-8 w-full flex-1"; // Padded and constrained untuk dashboard
@@ -485,32 +576,41 @@
       sideNav.innerHTML = "";
       bottomNav.innerHTML = "";
 
-      dashboardMenus.forEach((menu) => {
-        const isActive = currentMenu === menu.id;
+      dashboardMenus
+        .filter((menu) => !menu.adminOnly || currentUser.role === "admin")
+        .forEach((menu) => {
+          const isActive = currentMenu === menu.id;
 
-        const sBtn = document.createElement("button");
-        sBtn.className = `w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${isActive ? "bg-blue-50 text-blue-700" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}`;
-        sBtn.innerHTML = `<i class="fas ${menu.icon} w-6 text-lg ${isActive ? "text-blue-600" : "text-gray-400"}"></i> <span>${menu.label}</span>`;
-        sBtn.onclick = () => {
-          currentMenu = menu.id;
-          renderApp();
-        };
-        sideNav.appendChild(sBtn);
+          const sBtn = document.createElement("button");
+          sBtn.className = `w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-lg transition-colors ${isActive ? "bg-blue-600 text-white shadow-sm shadow-blue-600/20" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"}`;
+          sBtn.innerHTML = `<i class="fas ${menu.icon} w-5 text-base ${isActive ? "text-white" : "text-slate-400"}"></i> <span>${menu.label}</span>`;
+          sBtn.onclick = () => {
+            currentMenu = menu.id;
+            renderApp();
+          };
+          sideNav.appendChild(sBtn);
 
-        const bBtn = document.createElement("button");
-        bBtn.className = `flex flex-col items-center justify-center w-full h-full text-xs transition ${isActive ? "text-blue-600" : "text-gray-500"}`;
-        bBtn.innerHTML = `<i class="fas ${menu.icon} text-xl mb-1"></i> <span class="truncate w-full text-center px-1" style="font-size: 0.65rem;">${menu.label}</span>`;
-        bBtn.onclick = () => {
-          currentMenu = menu.id;
-          renderApp();
-        };
-        bottomNav.appendChild(bBtn);
-      });
+          const bBtn = document.createElement("button");
+          bBtn.className = `flex flex-col items-center justify-center w-full h-full text-xs transition ${isActive ? "text-blue-600" : "text-slate-500"}`;
+          bBtn.innerHTML = `<i class="fas ${menu.icon} text-xl mb-1"></i> <span class="truncate w-full text-center px-1" style="font-size: 0.65rem;">${menu.label}</span>`;
+          bBtn.onclick = () => {
+            currentMenu = menu.id;
+            renderApp();
+          };
+          bottomNav.appendChild(bBtn);
+        });
     }
 
     function navigate(page) {
       currentMenu = page;
       renderApp();
+    }
+
+    function toggleMobilePublicNav(forceOpen = null) {
+      const nav = document.getElementById("mobile-public-nav");
+      if (!nav) return;
+      const shouldOpen = forceOpen === null ? nav.classList.contains("hidden") : forceOpen;
+      nav.classList.toggle("hidden", !shouldOpen);
     }
 
     function renderPublicContent() {
@@ -526,19 +626,14 @@
                 <div id="public-landing-page" class="w-full fade-in pb-10">
                     
                     <!-- 1. SECTION BERANDA (HERO DESAIN MODERN 2-KOLOM TIPE SAAS) -->
-                    <section id="home" class="relative pt-20 pb-20 lg:pt-28 lg:pb-32 overflow-hidden bg-gradient-to-br from-[#eff6ff] via-[#ffffff] to-[#e0e7ff]">
-                        <!-- Decorative Background Blurs -->
-                        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                            <div class="absolute -top-32 -right-32 w-[500px] h-[500px] bg-blue-300/30 rounded-full filter blur-[100px] opacity-70"></div>
-                            <div class="absolute top-1/2 -left-32 w-[400px] h-[400px] bg-indigo-300/30 rounded-full filter blur-[100px] opacity-70"></div>
-                        </div>
-
-                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <section id="home" class="relative pt-16 pb-20 lg:pt-24 lg:pb-28 overflow-hidden bg-slate-50 border-b border-slate-200">
+                        <div class="section-shell relative z-10">
                             <div class="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center">
                                 <!-- KOLOM KIRI: TEKS & TOMBOL -->
                                 <div class="text-center lg:text-left pt-8 lg:pt-0">
                                     <!-- Badge -->
-                                    <div class="inline-flex items-center px-5 py-2 rounded-full bg-blue-600 text-white font-bold text-xs tracking-wider mb-8 shadow-md shadow-blue-500/30 uppercase">
+                                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-extrabold text-xs tracking-wider mb-8 uppercase">
+                                        <i class="fas fa-bolt"></i>
                                         LMS Generasi Baru
                                     </div>
                                     
@@ -555,39 +650,39 @@
                                     
                                     <!-- Buttons -->
                                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
-                                        <a href="#pricing" class="inline-flex justify-center items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1">
+                                        <a href="#pricing" class="inline-flex justify-center items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1">
                                             <i class="fas fa-graduation-cap text-xl"></i> Mulai Belajar
                                         </a>
-                                        <a href="#about" class="inline-flex justify-center items-center gap-3 bg-white text-blue-600 border border-gray-100 shadow-sm px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300">
+                                        <a href="#about" class="inline-flex justify-center items-center gap-3 bg-white text-blue-600 border border-slate-200 shadow-sm px-8 py-4 rounded-lg font-bold text-lg hover:bg-slate-50 hover:shadow-md transition-all duration-300">
                                             <i class="fas fa-play text-lg"></i> Pelajari Lebih Lanjut
                                         </a>
                                     </div>
 
                                     <!-- Features Grid -->
-                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl mx-auto lg:mx-0">
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto lg:mx-0">
                                         <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-blue-600 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-blue-600 text-xl mb-3 transform hover:scale-105 transition duration-300">
                                                 <i class="fas fa-code"></i>
                                             </div>
                                             <h4 class="font-bold text-sm text-gray-900 mb-1">Web App Modern</h4>
                                             <p class="text-xs text-gray-500 font-medium">HTML, CSS, JS</p>
                                         </div>
                                         <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-emerald-500 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-emerald-500 text-xl mb-3 transform hover:scale-105 transition duration-300">
                                                 <i class="fas fa-table"></i>
                                             </div>
                                             <h4 class="font-bold text-sm text-gray-900 mb-1">Google Sheets</h4>
                                             <p class="text-xs text-gray-500 font-medium">Database Gratis</p>
                                         </div>
                                         <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-amber-500 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-amber-500 text-xl mb-3 transform hover:scale-105 transition duration-300">
                                                 <i class="fas fa-cogs"></i>
                                             </div>
                                             <h4 class="font-bold text-sm text-gray-900 mb-1">Apps Script</h4>
                                             <p class="text-xs text-gray-500 font-medium">Integrasi Kuat</p>
                                         </div>
                                         <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-14 h-14 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-sky-500 text-2xl mb-4 transform hover:scale-110 transition duration-300">
+                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-sky-500 text-xl mb-3 transform hover:scale-105 transition duration-300">
                                                 <i class="fas fa-cloud"></i>
                                             </div>
                                             <h4 class="font-bold text-sm text-gray-900 mb-1">Tanpa Server</h4>
@@ -599,11 +694,9 @@
                                 <!-- KOLOM KANAN: GAMBAR HERO/ILUSTRASI -->
                                 <div class="relative flex justify-center lg:justify-end mt-4 lg:mt-0">
                                     <div class="relative w-full max-w-lg lg:max-w-none">
-                                        <!-- Decorative glowing orb behind image -->
-                                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-blue-300/40 rounded-full filter blur-[70px] z-0 pointer-events-none"></div>
-                                        
-                                        <!-- GAMBAR UTAMA (GANTI URL INI) -->
-                                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEmn1lxsEc-9iUuD7cM0Dgja2prAxuN_TInUgrtAIXACRd16QuLVQlhLaQpH5I65ZNvShy6vyIS9iH4GV0cv0Kqbcshc0vxHKcAJwcW213o5cUNZJcfUgt2uJvnW1F1FaM48d1_EHAxImCi6uuqQtTTVqjLqe5LGSCZpYxOImcTtjfnCBKwnwggGkU2qa-/s320/selamat%20datang%20pakar%20web.webp" alt="Preview Aplikasi" class="relative z-10 w-full h-auto drop-shadow-2xl hover:drop-shadow-3xl transition duration-500" onerror="this.src='https://placehold.co/800x600/eff6ff/2563eb?text=Masukkan+Gambar+Laptop/Mockup+Disini'">
+                                        <div class="relative z-10 overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-2xl shadow-slate-900/10">
+                                            <img src="https://unsplash.com/photos/m_HRfLhgABo/download?force=true&w=1200" alt="Workspace pengembangan web app" class="aspect-[4/3] w-full rounded-md object-cover" onerror="this.src='https://unsplash.com/photos/0chr85LZuTc/download?force=true&w=1200'">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -611,13 +704,13 @@
                     </section>
 
                     <!-- 2. SECTION TENTANG -->
-                    <section id="about" class="relative pt-20 pb-20 lg:pt-28 lg:pb-32 overflow-hidden bg-gradient-to-br from-[#e0e7ff] via-[#ffffff] to-[#eff6ff]">
+                    <section id="about" class="relative pt-20 pb-20 lg:pt-28 lg:pb-32 overflow-hidden bg-white">
                         
                         <!-- Bagian 1: Mengapa Memilih -->
-                        <div class="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto mb-20 px-4 sm:px-6 lg:px-8">
+                        <div class="grid md:grid-cols-2 gap-12 items-center section-shell mb-20">
                              <div class="relative">
-                                <div class="absolute inset-0 bg-gradient-to-tr from-blue-100 to-emerald-50 rounded-3xl transform rotate-3 scale-105"></div>
-                                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh3O7ed6sGBYTrwUTN3M7_pOmGdTqasU57VKSA5CZZFmXFQBoE9_DAl3_u4SSW762LxXGkkd8kZeZ4Eyn5Z7DuxILjzuHeAAnjinMvEurxTbgHT7jpbLucXdRNQQzHV0J2J4xy3ien_fLLFSgcIhIyTnPQGjZeXcPBeyaW2_BjGn-eKFZeFrkad4CCLSX0G/s320/Mengapa%20Memilih%20GasDigital%20..webp" alt="Platform Preview" class="relative rounded-2xl shadow-xl w-full object-cover border-4 border-white">
+                                <div class="absolute inset-0 bg-blue-50 rounded-lg transform rotate-2 scale-105"></div>
+                                <img src="https://unsplash.com/photos/ic9Ns3_90yw/download?force=true&w=1200" alt="Dashboard bisnis digital GasDigital" class="relative aspect-[4/3] rounded-lg shadow-xl w-full object-cover border-4 border-white">
                             </div>
                             <div>
                                 <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 font-bold text-xs tracking-wider mb-4 uppercase">
@@ -634,7 +727,7 @@
                         </div>
 
                         <!-- Bagian 2: Alur Kerja (Cara Kerja) -->
-                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="section-shell">
                             <div class="text-center max-w-3xl mx-auto mb-16">
                                 <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Membangun Aplikasi Kini Lebih Mudah: <br class="hidden sm:block"/><span class="text-blue-600">Alur Kerja GasDigital</span></h3>
                             </div>
@@ -645,7 +738,7 @@
 
                                 <!-- Step 1 -->
                                 <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-24 h-24 bg-white rounded-full shadow-lg border-4 border-blue-50 flex items-center justify-center text-blue-600 text-3xl mb-6 group-hover:scale-110 group-hover:border-blue-100 transition duration-300">
+                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-blue-50 flex items-center justify-center text-blue-600 text-2xl mb-6 group-hover:scale-105 group-hover:border-blue-100 transition duration-300">
                                         <i class="fas fa-lightbulb"></i>
                                     </div>
                                     <h4 class="font-bold text-gray-900 text-lg mb-2">1. Ketik Ide Aplikasi Anda</h4>
@@ -654,7 +747,7 @@
 
                                 <!-- Step 2 -->
                                 <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-24 h-24 bg-white rounded-full shadow-lg border-4 border-emerald-50 flex items-center justify-center text-emerald-500 text-3xl mb-6 group-hover:scale-110 group-hover:border-emerald-100 transition duration-300">
+                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-emerald-50 flex items-center justify-center text-emerald-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-emerald-100 transition duration-300">
                                         <i class="fas fa-robot"></i>
                                     </div>
                                     <h4 class="font-bold text-gray-900 text-lg mb-2">2. Rekomendasi Sistem Cerdas</h4>
@@ -663,7 +756,7 @@
 
                                 <!-- Step 3 -->
                                 <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-24 h-24 bg-white rounded-full shadow-lg border-4 border-amber-50 flex items-center justify-center text-amber-500 text-3xl mb-6 group-hover:scale-110 group-hover:border-amber-100 transition duration-300">
+                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-amber-50 flex items-center justify-center text-amber-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-amber-100 transition duration-300">
                                         <i class="fas fa-sliders-h"></i>
                                     </div>
                                     <h4 class="font-bold text-gray-900 text-lg mb-2">3. Kendali Penuh di Tangan Anda</h4>
@@ -672,7 +765,7 @@
 
                                 <!-- Step 4 -->
                                 <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-24 h-24 bg-white rounded-full shadow-lg border-4 border-purple-50 flex items-center justify-center text-purple-500 text-3xl mb-6 group-hover:scale-110 group-hover:border-purple-100 transition duration-300">
+                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-purple-50 flex items-center justify-center text-purple-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-purple-100 transition duration-300">
                                         <i class="fas fa-code"></i>
                                     </div>
                                     <h4 class="font-bold text-gray-900 text-lg mb-2">4. Generate Backend & Frontend Otomatis</h4>
@@ -681,7 +774,7 @@
 
                                 <!-- Step 5 -->
                                 <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-24 h-24 bg-white rounded-full shadow-lg border-4 border-rose-50 flex items-center justify-center text-rose-500 text-3xl mb-6 group-hover:scale-110 group-hover:border-rose-100 transition duration-300">
+                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-rose-50 flex items-center justify-center text-rose-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-rose-100 transition duration-300">
                                         <i class="fas fa-rocket"></i>
                                     </div>
                                     <h4 class="font-bold text-gray-900 text-lg mb-2">5. Deployment Sederhana</h4>
@@ -693,8 +786,8 @@
                     </section>
 
                     <!-- SECTION KOLEKSI APLIKASI TERBARU -->
-                    <section id="portofolio" class="py-24 border-b border-gray-100 px-4 bg-white">
-                        <div class="max-w-7xl mx-auto">
+                    <section id="portofolio" class="py-24 border-b border-slate-200 bg-slate-50">
+                        <div class="section-shell">
                             <div class="text-center mb-16">
                                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Koleksi Aplikasi Terbaru</h2>
                                 <p class="text-gray-600 text-lg">Berbagai karya aplikasi inovatif yang telah dirilis.</p>
@@ -702,7 +795,7 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 <!-- Card 1 -->
-                                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
+                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
                                     <div class="relative overflow-hidden h-56">
                                         <div class="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
                                         <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=600&auto=format&fit=crop" alt="Sistem Manajemen Sekolah" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
@@ -720,7 +813,7 @@
                                 </div>
 
                                 <!-- Card 2 -->
-                                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
+                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
                                     <div class="relative overflow-hidden h-56">
                                         <div class="absolute inset-0 bg-emerald-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
                                         <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" alt="Dashboard Penjualan POS" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
@@ -738,7 +831,7 @@
                                 </div>
 
                                 <!-- Card 3 -->
-                                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
+                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
                                     <div class="relative overflow-hidden h-56">
                                         <div class="absolute inset-0 bg-purple-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
                                         <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=600&auto=format&fit=crop" alt="Aplikasi SPMB Online" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
@@ -756,7 +849,7 @@
                                 </div>
 
                                 <!-- Card 4 (Extra) -->
-                                <div class="portofolio-extra hidden bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
+                                <div class="portofolio-extra hidden bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
                                     <div class="relative overflow-hidden h-56">
                                         <div class="absolute inset-0 bg-amber-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
                                         <img src="https://images.unsplash.com/photo-1554147090-e1221a04a025?q=80&w=600&auto=format&fit=crop" alt="Aplikasi Absensi Online" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
@@ -774,7 +867,7 @@
                                 </div>
 
                                 <!-- Card 5 (Extra) -->
-                                <div class="portofolio-extra hidden bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
+                                <div class="portofolio-extra hidden bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
                                     <div class="relative overflow-hidden h-56">
                                         <div class="absolute inset-0 bg-rose-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
                                         <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=600&auto=format&fit=crop" alt="Aplikasi E-Learning" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
@@ -792,7 +885,7 @@
                                 </div>
 
                                 <!-- Card 6 (Extra) -->
-                                <div class="portofolio-extra hidden bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col">
+                                <div class="portofolio-extra hidden bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
                                     <div class="relative overflow-hidden h-56">
                                         <div class="absolute inset-0 bg-cyan-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
                                         <img src="https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?q=80&w=600&auto=format&fit=crop" alt="Aplikasi Tabungan Anak TK" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
@@ -811,7 +904,7 @@
                             </div>
                             
                             <div class="text-center mt-12">
-                                <button onclick="document.querySelectorAll('.portofolio-extra').forEach(el => el.classList.remove('hidden')); this.classList.add('hidden');" class="inline-flex items-center justify-center px-8 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 transition cursor-pointer">
+                                <button onclick="document.querySelectorAll('.portofolio-extra').forEach(el => el.classList.remove('hidden')); this.classList.add('hidden');" class="inline-flex items-center justify-center px-8 py-3 border border-slate-300 shadow-sm text-base font-bold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer">
                                     Lihat Semua Portofolio
                                 </button>
                             </div>
@@ -819,16 +912,16 @@
                     </section>
 
                     <!-- 3. SECTION HARGA (TAILWINDFLEX WIDE CARD STYLE) -->
-                    <section id="pricing" class="py-24 border-b border-gray-100 px-4 bg-gray-50">
+                    <section id="pricing" class="py-24 border-b border-slate-200 bg-white">
                         <div class="max-w-5xl mx-auto">
                             
                             <!-- Container Harga Utama (Split Kiri-Kanan) -->
-                            <div class="flex flex-col md:flex-row bg-[#475569] rounded-xl shadow-2xl overflow-hidden">
+                            <div class="flex flex-col md:flex-row bg-slate-900 rounded-lg shadow-2xl shadow-slate-900/20 overflow-hidden mx-4 sm:mx-6 lg:mx-0">
                                 
                                 <!-- Bagian Kiri: Deskripsi & Fitur (Warna Slate Terang) -->
                                 <div class="md:w-2/3 p-8 md:p-12 flex flex-col justify-center">
                                     <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Akses Seumur Hidup</h2>
-                                    <p class="text-slate-200 text-base md:text-lg mb-8">Bawa pengembangan Web App CSS & Tailwind Anda ke level berikutnya!</p>
+                                    <p class="text-slate-300 text-base md:text-lg mb-8">Bangun Web App, dashboard, dan automasi Google Workspace dari satu alur belajar yang praktis.</p>
                                     
                                     <!-- Garis Pemisah Tipis -->
                                     <hr class="border-slate-500 mb-8 opacity-50">
@@ -855,14 +948,14 @@
                                 </div>
                                 
                                 <!-- Bagian Kanan: Harga & Tombol Beli (Warna Slate Gelap) -->
-                                <div class="md:w-1/3 bg-[#334155] p-8 md:p-12 flex flex-col items-center justify-center text-center">
+                                <div class="md:w-1/3 bg-slate-800 p-8 md:p-12 flex flex-col items-center justify-center text-center">
                                     <p class="text-slate-200 text-sm md:text-base mb-4">Bayar sekali, miliki selamanya</p>
                                     
                                     <div class="flex items-baseline justify-center mb-6">
                                         <span class="text-5xl font-extrabold text-white tracking-tight">Rp50.000</span>
                                     </div>
                                     
-                                    <a href="https://lynk.id/pmjakak" target="_blank" class="w-full bg-[#6366f1] hover:bg-[#4f46e5] text-white font-semibold py-3 px-4 rounded-md transition duration-200 shadow-sm mb-4">
+                                    <a href="https://lynk.id/pmjakak" target="_blank" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-sm mb-4">
                                         Beli Sekarang
                                     </a>
                                     
@@ -875,8 +968,8 @@
                     </section>
 
                     <!-- 4. SECTION ARTIKEL -->
-                    <section id="articles" class="py-24 border-b border-gray-100 px-4">
-                        <div class="max-w-7xl mx-auto">
+                    <section id="articles" class="py-24 border-b border-slate-200 bg-slate-50">
+                        <div class="section-shell">
                             <div class="flex justify-between items-end mb-12">
                                 <div>
                                     <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Artikel & Insights</h2>
@@ -885,8 +978,8 @@
                                 <a href="#" class="hidden md:block text-blue-600 font-semibold hover:text-blue-700 transition">Lihat Semua <i class="fas fa-arrow-right ml-1"></i></a>
                             </div>
                             <div class="grid md:grid-cols-3 gap-8">
-                                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition group cursor-pointer flex flex-col">
-                                    <div class="h-48 overflow-hidden"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-gIamokzNn0ivKhtEOMV0EhYdX6lpD6EPflkdo08eoqUQBdAM0AZXJYsaUaKNWVK1KU2msLuvM6hReZGofwUy_pinK0Sdd8HjmDJvfuppw_nvbkoI1w6X0kHIlpJylZ0YCkYxgN9S_pxaBP3d__K_N0jhgW0K_ZbaGuNr7-VxuWz44lGbAVBLlZ7J9BZ9/s320/google%20apps%20script.webp" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
+                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg hover:shadow-slate-900/10 transition group cursor-pointer flex flex-col">
+                                    <div class="h-48 overflow-hidden"><img src="https://unsplash.com/photos/0chr85LZuTc/download?force=true&w=900" alt="Artikel Apps Script" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://unsplash.com/photos/ic9Ns3_90yw/download?force=true&w=900'"></div>
                                     <div class="p-6 flex-1 flex flex-col">
                                         <div class="text-xs font-bold text-blue-600 mb-2 uppercase tracking-wider">Tutorial</div>
                                         <h3 class="text-lg font-bold text-gray-900 mb-2">Keunggulan Apps Script</h3>
@@ -894,8 +987,8 @@
                                         <span class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition mt-auto">Baca selengkapnya &rarr;</span>
                                     </div>
                                 </div>
-                                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition group cursor-pointer flex flex-col">
-                                    <div class="h-48 overflow-hidden"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhcvq6EolBLShuMXjcGcN5svr-axrOFztmJS2wrx46kiR4uJDGZWP0hSfT-WhD5SSM3v1nEDJRID1GCh4yAA5Mk1cGOthyphenhyphenmwPH31RIkszTEtuQ1DrHWE_wr1JtRWjKLpVHEvd-lxsKPeOflef551ScSiIjQq3OEh3M3I3tniIFVfitZ77KKGo9utjw80xPi/s1600/tailwind%20css.webp" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
+                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg hover:shadow-slate-900/10 transition group cursor-pointer flex flex-col">
+                                    <div class="h-48 overflow-hidden"><img src="https://unsplash.com/photos/m_HRfLhgABo/download?force=true&w=900" alt="Artikel styling web modern" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://unsplash.com/photos/ic9Ns3_90yw/download?force=true&w=900'"></div>
                                     <div class="p-6 flex-1 flex flex-col">
                                         <div class="text-xs font-bold text-emerald-600 mb-2 uppercase tracking-wider">Frontend</div>
                                         <h3 class="text-lg font-bold text-gray-900 mb-2">Styling Cepat & Modern</h3>
@@ -903,8 +996,8 @@
                                         <span class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition mt-auto">Baca selengkapnya &rarr;</span>
                                     </div>
                                 </div>
-                                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition group cursor-pointer flex flex-col">
-                                    <div class="h-48 overflow-hidden"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4DZqyXHUAA0Pi5MwUD6rqj5kC0bpzB6-HztBjxEKlw6BAFTSYPxtlZCNppUqYfcayAQOURwra3qZRXA7AqP-XGB6OQ5ixzk6rew1cpd-HDt8GvVMUN2UiEpc9V_20b2Rcp241pEnkvIiOoL2WvnftreB6uP4MFlhGuB2nfD1hoZoBKaBGE8D6NDWQUA5W/s320/spreadseet.webp" alt="Artikel" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/f8fafc/64748b?text=Image'"></div>
+                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg hover:shadow-slate-900/10 transition group cursor-pointer flex flex-col">
+                                    <div class="h-48 overflow-hidden"><img src="https://unsplash.com/photos/ic9Ns3_90yw/download?force=true&w=900" alt="Artikel database spreadsheet" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://unsplash.com/photos/0chr85LZuTc/download?force=true&w=900'"></div>
                                     <div class="p-6 flex-1 flex flex-col">
                                         <div class="text-xs font-bold text-purple-600 mb-2 uppercase tracking-wider">Arsitektur</div>
                                         <h3 class="text-lg font-bold text-gray-900 mb-2">Spreadsheet jadi Database</h3>
@@ -917,21 +1010,21 @@
                     </section>
 
                     <!-- 5. SECTION FAQ (DIBUAT STATIS/HARDCODE) -->
-                    <section id="faq" class="py-24 px-4 bg-gray-50/50">
+                    <section id="faq" class="py-24 bg-white">
                         <div class="text-center max-w-3xl mx-auto mb-12">
                             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pertanyaan Umum</h2>
                             <p class="text-gray-600 text-lg">Jawaban cepat untuk hal-hal yang sering ditanyakan.</p>
                         </div>
                         <div class="grid gap-4 max-w-3xl mx-auto">
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition">
                                 <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Apakah materi ini gratis?</span></h4>
                                 <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Kami menyediakan paket Basic dengan harga terjangkau untuk pemula, serta paket Lifetime Pro untuk akses materi tingkat lanjut dan update selamanya.</p>
                             </div>
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition">
                                 <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Apakah saya perlu sewa hosting/server?</span></h4>
                                 <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Tidak sama sekali. Semua arsitektur yang kami ajarkan menggunakan ekosistem gratis dari Google (Google Apps Script & Google Sheets).</p>
                             </div>
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition">
                                 <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Bagaimana cara mendapatkan bimbingan?</span></h4>
                                 <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Anda bisa memilih paket Mentoring di mana Anda akan dibimbing secara intensif secara private 1-on-1 melalui sesi Zoom.</p>
                             </div>
@@ -947,15 +1040,26 @@
 
       if (currentMenu === "dash_home") {
         content.innerHTML = `
-                    <div class="fade-in">
-                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Selamat datang, ${currentUser.name}!</h2>
-                        <p class="text-gray-600 mb-6">Pilih menu navigasi untuk memulai eksplorasi materi.</p>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500"><h3 class="text-gray-500 text-sm">Total Courses</h3><p class="text-2xl font-bold">${appData.courses.length}</p></div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500"><h3 class="text-gray-500 text-sm">Tools Aktif</h3><p class="text-2xl font-bold">${appData.tools.length}</p></div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500"><h3 class="text-gray-500 text-sm">Total Template</h3><p class="text-2xl font-bold">${appData.templates.length}</p></div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500"><h3 class="text-gray-500 text-sm">Total Market</h3><p class="text-2xl font-bold">${appData.market.length}</p></div>
-                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500"><h3 class="text-gray-500 text-sm">Jadwal Live</h3><p class="text-2xl font-bold">${appData.live.length}</p></div>
+                    <div class="fade-in space-y-6">
+                        <div class="rounded-lg bg-slate-950 p-6 md:p-8 text-white shadow-xl shadow-slate-900/10">
+                            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                                <div>
+                                    <p class="text-sm font-bold uppercase tracking-wider text-blue-200">${isAdmin ? "Panel Administrator" : "Ruang Belajar Peserta"}</p>
+                                    <h2 class="mt-2 text-2xl md:text-4xl font-extrabold tracking-tight">Selamat datang, ${currentUser.name}!</h2>
+                                    <p class="mt-3 max-w-2xl text-slate-300">Kelola materi, akses tools, ikuti live session, dan gunakan template siap pakai dari satu dashboard.</p>
+                                </div>
+                                <span class="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white ring-1 ring-white/15">
+                                    <i class="fas fa-user-shield text-blue-200"></i>${currentUser.role}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                            <button onclick="navigate('courses')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-blue-200 hover:shadow-md transition"><span class="text-blue-600"><i class="fas fa-video"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Courses</h3><p class="text-3xl font-extrabold text-slate-950">${appData.courses.length}</p></button>
+                            <button onclick="navigate('tools')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-emerald-200 hover:shadow-md transition"><span class="text-emerald-600"><i class="fas fa-wrench"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Tools</h3><p class="text-3xl font-extrabold text-slate-950">${appData.tools.length}</p></button>
+                            <button onclick="navigate('templates')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-amber-200 hover:shadow-md transition"><span class="text-amber-600"><i class="fas fa-file-code"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Template</h3><p class="text-3xl font-extrabold text-slate-950">${appData.templates.length}</p></button>
+                            <button onclick="navigate('market')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-purple-200 hover:shadow-md transition"><span class="text-purple-600"><i class="fas fa-store"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Market</h3><p class="text-3xl font-extrabold text-slate-950">${appData.market.length}</p></button>
+                            <button onclick="navigate('live')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-rose-200 hover:shadow-md transition"><span class="text-rose-600"><i class="fas fa-satellite-dish"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Live</h3><p class="text-3xl font-extrabold text-slate-950">${appData.live.length}</p></button>
+                            ${isAdmin ? `<button onclick="navigate('users')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-sky-200 hover:shadow-md transition"><span class="text-sky-600"><i class="fas fa-users-gear"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Users</h3><p class="text-3xl font-extrabold text-slate-950">${appData.users.length}</p></button>` : ""}
                         </div>
                     </div>`;
         return;
@@ -964,31 +1068,47 @@
       const entity = currentMenu;
       const dataList = appData[entity] || [];
 
-      let html = `<div class="flex justify-between items-center mb-6 fade-in">
-                            <h2 class="text-2xl font-bold text-gray-800 capitalize">${entity}</h2>
-                            ${isAdmin ? `<button onclick="openCrudModal('${entity}')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 shadow-sm"><i class="fas fa-plus mr-1"></i> Tambah</button>` : ""}
+      const pageLabels = {
+        courses: "Courses",
+        live: "Live Session",
+        tools: "Tools",
+        templates: "Templates",
+        market: "Market",
+        users: "Users",
+      };
+
+      let html = `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 fade-in">
+                            <div>
+                              <p class="text-xs font-extrabold uppercase tracking-wider text-blue-600">Dashboard</p>
+                              <h2 class="text-2xl md:text-3xl font-extrabold text-slate-950">${pageLabels[entity] || entity}</h2>
+                            </div>
+                            ${isAdmin ? `<button onclick="openCrudModal('${entity}')" class="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm shadow-blue-600/20"><i class="fas fa-plus"></i> Tambah Data</button>` : ""}
                         </div>`;
 
       html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">`;
 
       if (dataList.length === 0) {
-        html += `<div class="col-span-full p-8 text-center bg-white rounded-xl shadow-sm border border-dashed border-gray-300 text-gray-500">Data belum tersedia.</div>`;
+        html += `<div class="col-span-full p-10 text-center bg-white rounded-lg shadow-sm border border-dashed border-slate-300 text-slate-500">
+                  <div class="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400"><i class="fas fa-inbox"></i></div>
+                  <p class="font-bold text-slate-700">Data belum tersedia.</p>
+                  <p class="mt-1 text-sm">${isAdmin ? "Klik Tambah Data untuk membuat konten baru." : "Konten akan tampil setelah admin menambahkannya."}</p>
+                </div>`;
       }
 
       dataList.forEach((item) => {
         const encodedItem = encodeBase64Safe(JSON.stringify(item));
 
-        html += `<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col transition hover:shadow-md">`;
+        html += `<div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col transition hover:shadow-lg hover:shadow-slate-900/10">`;
 
         const imgUrl =
           item.thumbnail_url || item.preview_img || item.image_url || null;
         if (imgUrl)
-          html += `<img src="${imgUrl}" alt="Cover" class="w-full h-40 object-cover bg-gray-200" onerror="this.src='https://placehold.co/600x400/eeeeee/999999?text=Image'">`;
+          html += `<img src="${imgUrl}" alt="Cover" class="w-full h-44 object-cover bg-slate-200" onerror="this.src='https://unsplash.com/photos/ic9Ns3_90yw/download?force=true&w=900'">`;
 
         html += `<div class="p-5 flex-1 flex flex-col">`;
 
         if (item.icon_url)
-          html += `<img src="${item.icon_url}" class="w-12 h-12 rounded-lg mb-3 shadow-sm border border-gray-50">`;
+          html += `<img src="${item.icon_url}" class="w-12 h-12 rounded-lg mb-3 shadow-sm border border-slate-100">`;
 
         const title =
           item.title ||
@@ -996,8 +1116,10 @@
           item.tool_name ||
           item.template_name ||
           item.product_name ||
-          item.question;
-        html += `<h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2">${title}</h3>`;
+          item.question ||
+          item.name ||
+          item.username;
+        html += `<h3 class="font-extrabold text-lg text-slate-950 mb-2 line-clamp-2">${title}</h3>`;
 
         if (item.price) {
           const formattedPrice = isNaN(item.price) ? item.price : "Rp " + parseInt(item.price).toLocaleString("id-ID");
@@ -1008,11 +1130,13 @@
           item.description ||
           item.date_time ||
           item.category ||
-          item.answer;
+          item.answer ||
+          item.role ||
+          item.username;
         if (desc)
-          html += `<p class="text-sm text-gray-600 mb-4 line-clamp-3">${desc}</p>`;
+          html += `<p class="text-sm text-slate-600 mb-4 line-clamp-3">${desc}</p>`;
 
-        html += `<div class="mt-auto pt-4 flex gap-2 border-t border-gray-50">`;
+        html += `<div class="mt-auto pt-4 flex gap-2 border-t border-slate-100">`;
 
         const linkUrl =
           item.content_url ||
@@ -1023,14 +1147,14 @@
         const demoUrl = item.demo_link;
 
         if (linkUrl) {
-          const buttonText = entity === 'market' ? 'Beli' : 'Download';
+          const buttonText = entity === 'market' ? 'Bayar' : 'Download';
           html += `<a href="${linkUrl}" target="_blank" class="flex-1 text-center bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition flex items-center justify-center"><i class="fas fa-external-link-alt mr-1"></i> ${buttonText}</a>`;
         } else if (
           !isAdmin &&
           entity !== "templates" &&
           entity !== "market"
         ) {
-          html += `<span class="flex-1 text-center bg-gray-100 text-gray-400 py-2 rounded-lg text-sm font-bold flex items-center justify-center">No Action</span>`;
+          html += `<span class="flex-1 text-center bg-slate-100 text-slate-400 py-2 rounded-lg text-sm font-bold flex items-center justify-center">Belum tersedia</span>`;
         }
 
         if (entity === "templates" || entity === "market") {
@@ -1039,7 +1163,7 @@
           } else {
             if (!linkUrl && !isAdmin) {
               // If neither Buka nor Demo is available, and not admin, at least show No Action
-              html += `<span class="flex-1 text-center bg-gray-100 text-gray-400 py-2 rounded-lg text-sm font-bold flex items-center justify-center">No Action</span>`;
+              html += `<span class="flex-1 text-center bg-slate-100 text-slate-400 py-2 rounded-lg text-sm font-bold flex items-center justify-center">Belum tersedia</span>`;
             }
           }
         }
@@ -1079,13 +1203,13 @@
         const val = data[f.key] || "";
         let inputHtml = "";
         if (f.type === "textarea") {
-          inputHtml = `<textarea id="field_${f.key}" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">${val}</textarea>`;
+          inputHtml = `<textarea id="field_${f.key}" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50">${val}</textarea>`;
         } else {
-          inputHtml = `<input type="${f.type}" id="field_${f.key}" value="${val}" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-50">`;
+          inputHtml = `<input type="${f.type}" id="field_${f.key}" value="${val}" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50">`;
         }
         fieldsContainer.innerHTML += `
                     <div>
-                        <label class="block text-gray-700 text-sm font-bold mb-1">${f.label}</label>
+                        <label class="block text-slate-700 text-sm font-bold mb-1">${f.label}</label>
                         ${inputHtml}
                     </div>
                 `;
@@ -1210,7 +1334,7 @@
               title: "Mastering Apps Script",
               description: "Belajar membuat backend tanpa server.",
               thumbnail_url:
-                "https://placehold.co/600x400/2563eb/white?text=Apps+Script",
+                "https://unsplash.com/photos/0chr85LZuTc/download?force=true&w=900",
               content_url: "#",
             },
           ];
@@ -1228,7 +1352,7 @@
               tool_name: "CSS Generator",
               description: "Buat bayangan kotak dengan mudah",
               access_link: "#",
-              icon_url: "https://placehold.co/100/10b981/white?text=CSS",
+              icon_url: "https://cdn.simpleicons.org/css3/10b981",
             },
           ];
           renderApp();
