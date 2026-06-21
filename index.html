@@ -135,6 +135,27 @@
         padding-right: 2rem;
       }
     }
+
+    .faq-accordion summary {
+      list-style: none;
+    }
+
+    .faq-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-chevron {
+      transition: transform 0.25s ease, background-color 0.25s ease;
+    }
+
+    .faq-accordion[open] .faq-chevron {
+      transform: rotate(180deg);
+      background-color: #ddd6fe;
+    }
+
+    .faq-accordion[open] .faq-answer {
+      animation: fadeIn 0.25s ease-out;
+    }
   </style>
 </head>
 
@@ -353,12 +374,101 @@
     const encodeBase64Safe = (str) => btoa(encodeURIComponent(str || ""));
     const decodeBase64Safe = (str) => decodeURIComponent(atob(str || ""));
     const generateId = () => "ID_" + Math.random().toString(36).substr(2, 9);
+    const escapeHtml = (value) =>
+      String(value ?? "").replace(/[&<>'"]/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;",
+      })[char]);
+
+    function getVisibleFaqs(includeInactive = false) {
+      const hiddenStatuses = ["nonaktif", "inactive", "draft", "false", "0"];
+      const faqs = Array.isArray(appData.faq) ? appData.faq : [];
+      return includeInactive
+        ? faqs
+        : faqs.filter((item) =>
+          !hiddenStatuses.includes(String(item.status || "").trim().toLowerCase()),
+        );
+    }
+
+    function renderFaqAccordionItem(item, isAdmin = false) {
+      const encodedItem = encodeBase64Safe(JSON.stringify(item));
+      const isActive = !["nonaktif", "inactive", "draft", "false", "0"].includes(
+        String(item.status || "").trim().toLowerCase(),
+      );
+      const summaryClass = "px-4 py-3.5 sm:px-5 sm:py-4";
+      const questionClass = "text-sm sm:text-base";
+      const chevronClass = "h-8 w-8";
+      const answerClass = "text-sm";
+
+      return `
+        <details class="faq-accordion overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition hover:border-violet-200 hover:shadow-sm">
+          <summary class="flex cursor-pointer select-none items-center justify-between gap-4 ${summaryClass}">
+            <span class="font-bold leading-relaxed text-slate-800 ${questionClass}">${escapeHtml(item.question)}</span>
+            <span class="faq-chevron grid ${chevronClass} shrink-0 place-items-center rounded-full bg-violet-100 text-violet-600">
+              <i class="fas fa-chevron-down text-xs"></i>
+            </span>
+          </summary>
+          <div class="faq-answer border-t border-slate-200 px-4 py-3.5 sm:px-5 sm:py-4">
+            <p class="whitespace-pre-line leading-relaxed text-slate-600 ${answerClass}">${escapeHtml(item.answer)}</p>
+            ${isAdmin ? `
+              <div class="mt-5 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-4">
+                <span class="mr-auto inline-flex rounded-full px-2.5 py-1 text-xs font-bold ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"}">${isActive ? "Aktif" : "Nonaktif"}</span>
+                <button onclick="openCrudModal('faq', '${encodedItem}')" class="rounded-lg bg-amber-100 px-4 py-2 text-sm font-bold text-amber-700 transition hover:bg-amber-200"><i class="fas fa-edit mr-1"></i> Edit</button>
+                <button onclick="deleteData('faq', '${item.id}')" class="rounded-lg bg-red-100 px-4 py-2 text-sm font-bold text-red-600 transition hover:bg-red-200"><i class="fas fa-trash mr-1"></i> Hapus</button>
+              </div>` : ""}
+          </div>
+        </details>`;
+    }
+
+    function renderFaqGroups(faqs, isAdmin = false) {
+      const categoryOrder = [
+        "Pakar Web App & GAS Database",
+        "Blogger",
+        "Google Spreadsheet",
+      ];
+      const grouped = faqs.reduce((result, item) => {
+        const savedCategory = String(item.category || item.kategori || "").trim();
+        const normalizedCategory = categoryOrder.find(
+          (category) => category.toLowerCase() === savedCategory.toLowerCase(),
+        );
+        const searchableText = String(item.question || "").toLowerCase();
+        const inferredCategory = searchableText.includes("blog")
+          ? "Blogger"
+          : searchableText.includes("spreadsheet") || searchableText.includes("google sheet")
+            ? "Google Spreadsheet"
+            : "Pakar Web App & GAS Database";
+        const category = normalizedCategory || inferredCategory;
+        if (!result[category]) result[category] = [];
+        result[category].push(item);
+        return result;
+      }, {});
+      const categories = [
+        ...categoryOrder.filter((category) => grouped[category]),
+      ];
+
+      return categories.map((category) => `
+        <section class="faq-category">
+          <div class="mb-2.5 flex items-center gap-2.5">
+            <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-violet-100 text-sm text-violet-600">
+              <i class="fas ${category === "Blogger" ? "fa-blog" : category === "Google Spreadsheet" ? "fa-table-cells" : "fa-code"}"></i>
+            </span>
+            <h3 class="text-base font-extrabold text-slate-900 sm:text-lg">${escapeHtml(category)}</h3>
+          </div>
+          <div class="grid gap-3">
+            ${grouped[category].map((item) => renderFaqAccordionItem(item, isAdmin)).join("")}
+          </div>
+        </section>`).join("");
+    }
 
     // ==========================================
     // APP STATE & DATA MOCKING
     // ==========================================
     let currentUser = null;
     let currentMenu = "home";
+    let selectedMarketProductId = null;
 
     let appData = {
       courses: [],
@@ -366,6 +476,7 @@
       tools: [],
       templates: [],
       market: [],
+      faq: [],
       users: [],
     };
 
@@ -376,6 +487,7 @@
       { id: "tools", icon: "fa-wrench", label: "Tools" },
       { id: "templates", icon: "fa-file-code", label: "Templates" },
       { id: "market", icon: "fa-store", label: "Market" },
+      { id: "faq", icon: "fa-circle-question", label: "FAQ" },
       { id: "users", icon: "fa-users-gear", label: "Users", adminOnly: true },
     ];
 
@@ -415,6 +527,29 @@
         { key: "buy_link", label: "Link Checkout", type: "text" },
         { key: "image_url", label: "URL Gambar Produk", type: "text" },
         { key: "demo_link", label: "Link Demo", type: "text" },
+      ],
+      faq: [
+        {
+          key: "category",
+          label: "Kategori",
+          type: "select",
+          options: [
+            { value: "Pakar Web App & GAS Database", label: "Pakar Web App & GAS Database" },
+            { value: "Blogger", label: "Blogger" },
+            { value: "Google Spreadsheet", label: "Google Spreadsheet" },
+          ],
+        },
+        { key: "question", label: "Pertanyaan", type: "text" },
+        { key: "answer", label: "Jawaban", type: "textarea" },
+        {
+          key: "status",
+          label: "Status",
+          type: "select",
+          options: [
+            { value: "aktif", label: "Aktif (tampil)" },
+            { value: "nonaktif", label: "Nonaktif (disembunyikan)" },
+          ],
+        },
       ],
       users: [
         { key: "name", label: "Nama Lengkap", type: "text" },
@@ -538,7 +673,7 @@
 
         if (
           currentMenu.startsWith("dash_") ||
-          ["courses", "live", "tools", "templates", "market", "users"].includes(
+          ["courses", "live", "tools", "templates", "market", "faq", "users"].includes(
             currentMenu,
           )
         ) {
@@ -579,7 +714,8 @@
       dashboardMenus
         .filter((menu) => !menu.adminOnly || currentUser.role === "admin")
         .forEach((menu) => {
-          const isActive = currentMenu === menu.id;
+          const isActive = currentMenu === menu.id ||
+            (menu.id === "market" && currentMenu === "market_detail");
 
           const sBtn = document.createElement("button");
           sBtn.className = `w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-lg transition-colors ${isActive ? "bg-blue-600 text-white shadow-sm shadow-blue-600/20" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"}`;
@@ -606,6 +742,73 @@
       renderApp();
     }
 
+    function viewMarketProduct(id) {
+      selectedMarketProductId = id;
+      currentMenu = "market_detail";
+      renderApp();
+    }
+
+    function backToMarket() {
+      selectedMarketProductId = null;
+      currentMenu = "market";
+      renderApp();
+    }
+
+    function formatRupiah(price) {
+      if (price === null || price === undefined || price === "") return "Harga belum tersedia";
+      return isNaN(price)
+        ? String(price)
+        : "Rp " + parseInt(price, 10).toLocaleString("id-ID");
+    }
+
+    function renderMarketProductDetail(content) {
+      const product = appData.market.find(
+        (item) => String(item.id) === String(selectedMarketProductId),
+      );
+
+      if (!product) {
+        content.innerHTML = `<div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+          <div class="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-slate-400"><i class="fas fa-box-open"></i></div>
+          <h2 class="text-xl font-extrabold text-slate-900">Produk tidak ditemukan</h2>
+          <button onclick="backToMarket()" class="mt-5 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-700"><i class="fas fa-arrow-left mr-2"></i>Kembali ke Market</button>
+        </div>`;
+        return;
+      }
+
+      const imageUrl = product.image_url || "";
+      const buyUrl = product.buy_link || "";
+      const demoUrl = product.demo_link || "";
+      content.innerHTML = `
+        <div class="fade-in">
+          <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-900/5">
+            <div class="grid lg:grid-cols-2">
+              <div class="min-h-72 bg-slate-100 lg:min-h-[520px]">
+                ${imageUrl
+                  ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.product_name || "Produk")}" class="h-full min-h-72 w-full object-cover lg:min-h-[520px]" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="grid hidden h-full min-h-72 place-items-center text-5xl text-slate-300 lg:min-h-[520px]"><i class="fas fa-image"></i></div>`
+                  : `<div class="grid h-full min-h-72 place-items-center text-5xl text-slate-300 lg:min-h-[520px]"><i class="fas fa-image"></i></div>`}
+              </div>
+              <div class="flex flex-col p-6 sm:p-8 lg:p-10">
+                <span class="mb-4 inline-flex w-fit items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-purple-700"><i class="fas fa-store"></i> Market</span>
+                <h1 class="text-2xl font-extrabold leading-tight text-slate-950 sm:text-3xl">${escapeHtml(product.product_name || "Produk")}</h1>
+                <p class="mt-4 text-2xl font-extrabold text-emerald-600">${escapeHtml(formatRupiah(product.price))}</p>
+                <div class="my-6 h-px bg-slate-200"></div>
+                <h2 class="mb-2 text-sm font-extrabold uppercase tracking-wider text-slate-500">Deskripsi Produk</h2>
+                <p class="whitespace-pre-line text-sm leading-7 text-slate-600 sm:text-base">${escapeHtml(product.description || "Deskripsi produk belum tersedia.")}</p>
+                <div class="mt-auto grid gap-3 pt-8 sm:grid-cols-2">
+                  ${buyUrl && buyUrl !== "#"
+                    ? `<a href="${escapeHtml(buyUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"><i class="fas fa-cart-shopping mr-2"></i>Beli Produk</a>`
+                    : `<span class="inline-flex items-center justify-center rounded-lg bg-slate-100 px-5 py-3 text-sm font-bold text-slate-400">Link beli belum tersedia</span>`}
+                  ${demoUrl && demoUrl !== "#"
+                    ? `<a href="${escapeHtml(demoUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg bg-emerald-100 px-5 py-3 text-sm font-bold text-emerald-700 transition hover:bg-emerald-200"><i class="fas fa-play mr-2"></i>Lihat Demo</a>`
+                    : `<span class="inline-flex items-center justify-center rounded-lg bg-slate-100 px-5 py-3 text-sm font-bold text-slate-400">Demo belum tersedia</span>`}
+                  <button onclick="backToMarket()" class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 sm:col-span-2"><i class="fas fa-arrow-left mr-2"></i>Kembali ke Market</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
     function toggleMobilePublicNav(forceOpen = null) {
       const nav = document.getElementById("mobile-public-nav");
       if (!nav) return;
@@ -616,10 +819,12 @@
     function renderPublicContent() {
       const content = document.getElementById("main-content");
 
-      // JIKA HALAMAN PUBLIK SUDAH DI-RENDER, KITA TIDAK PERLU RE-RENDER
-      if (content.querySelector("#public-landing-page")) {
-        return; // Stop disini
-      }
+      const publicFaqs = getVisibleFaqs();
+      const publicFaqHtml = publicFaqs.length
+        ? renderFaqGroups(publicFaqs)
+        : `<div class="bg-slate-50 p-8 rounded-lg border border-dashed border-slate-300 text-center text-slate-500">
+             Pertanyaan umum belum tersedia.
+           </div>`;
 
       // JIKA BELUM RENDER SAMA SEKALI, BANGUN SELURUH HTML
       content.innerHTML = `
@@ -1009,24 +1214,18 @@
                         </div>
                     </section>
 
-                    <!-- 5. SECTION FAQ (DIBUAT STATIS/HARDCODE) -->
-                    <section id="faq" class="py-24 bg-white">
-                        <div class="text-center max-w-3xl mx-auto mb-12">
-                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pertanyaan Umum</h2>
-                            <p class="text-gray-600 text-lg">Jawaban cepat untuk hal-hal yang sering ditanyakan.</p>
-                        </div>
-                        <div class="grid gap-4 max-w-3xl mx-auto">
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition">
-                                <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Apakah materi ini gratis?</span></h4>
-                                <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Kami menyediakan paket Basic dengan harga terjangkau untuk pemula, serta paket Lifetime Pro untuk akses materi tingkat lanjut dan update selamanya.</p>
+                    <!-- 5. SECTION FAQ DINAMIS -->
+                    <section id="faq" class="relative overflow-hidden bg-gradient-to-b from-violet-50/70 via-slate-50 to-white py-16 md:py-20">
+                        <div class="pointer-events-none absolute -left-20 top-12 h-48 w-48 rounded-full bg-violet-200/30 blur-3xl"></div>
+                        <div class="pointer-events-none absolute -right-16 bottom-10 h-56 w-56 rounded-full bg-blue-200/30 blur-3xl"></div>
+                        <div class="section-shell relative">
+                            <div class="mx-auto mb-8 max-w-4xl text-center">
+                                <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wider text-violet-700 shadow-sm ring-1 ring-violet-100"><i class="fas fa-circle-question"></i> Pusat Bantuan</span>
+                                <h2 class="mb-2 text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl">Pertanyaan Umum</h2>
+                                <p class="text-sm text-slate-600 md:text-base">Jawaban cepat untuk hal-hal yang sering ditanyakan.</p>
                             </div>
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition">
-                                <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Apakah saya perlu sewa hosting/server?</span></h4>
-                                <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Tidak sama sekali. Semua arsitektur yang kami ajarkan menggunakan ekosistem gratis dari Google (Google Apps Script & Google Sheets).</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 hover:shadow-md transition">
-                                <h4 class="font-bold text-lg text-gray-900 flex items-start"><i class="fas fa-question-circle text-blue-500 mt-1 mr-3"></i> <span>Bagaimana cara mendapatkan bimbingan?</span></h4>
-                                <p class="text-gray-600 mt-3 ml-8 leading-relaxed">Anda bisa memilih paket Mentoring di mana Anda akan dibimbing secara intensif secara private 1-on-1 melalui sesi Zoom.</p>
+                            <div class="mx-auto grid max-w-4xl gap-6 rounded-3xl bg-white/90 p-4 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200/80 backdrop-blur sm:p-5">
+                                ${publicFaqHtml}
                             </div>
                         </div>
                     </section>
@@ -1037,6 +1236,11 @@
     function renderDashboardContent() {
       const content = document.getElementById("main-content");
       const isAdmin = currentUser.role === "admin";
+
+      if (currentMenu === "market_detail") {
+        renderMarketProductDetail(content);
+        return;
+      }
 
       if (currentMenu === "dash_home") {
         content.innerHTML = `
@@ -1059,6 +1263,7 @@
                             <button onclick="navigate('templates')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-amber-200 hover:shadow-md transition"><span class="text-amber-600"><i class="fas fa-file-code"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Template</h3><p class="text-3xl font-extrabold text-slate-950">${appData.templates.length}</p></button>
                             <button onclick="navigate('market')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-purple-200 hover:shadow-md transition"><span class="text-purple-600"><i class="fas fa-store"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Market</h3><p class="text-3xl font-extrabold text-slate-950">${appData.market.length}</p></button>
                             <button onclick="navigate('live')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-rose-200 hover:shadow-md transition"><span class="text-rose-600"><i class="fas fa-satellite-dish"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Live</h3><p class="text-3xl font-extrabold text-slate-950">${appData.live.length}</p></button>
+                            <button onclick="navigate('faq')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-indigo-200 hover:shadow-md transition"><span class="text-indigo-600"><i class="fas fa-circle-question"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">FAQ</h3><p class="text-3xl font-extrabold text-slate-950">${getVisibleFaqs(isAdmin).length}</p></button>
                             ${isAdmin ? `<button onclick="navigate('users')" class="text-left bg-white p-5 rounded-lg shadow-sm border border-slate-200 hover:border-sky-200 hover:shadow-md transition"><span class="text-sky-600"><i class="fas fa-users-gear"></i></span><h3 class="text-slate-500 text-sm mt-3 font-bold">Users</h3><p class="text-3xl font-extrabold text-slate-950">${appData.users.length}</p></button>` : ""}
                         </div>
                     </div>`;
@@ -1066,7 +1271,7 @@
       }
 
       const entity = currentMenu;
-      const dataList = appData[entity] || [];
+      const dataList = entity === "faq" ? getVisibleFaqs(isAdmin) : (appData[entity] || []);
 
       const pageLabels = {
         courses: "Courses",
@@ -1074,15 +1279,33 @@
         tools: "Tools",
         templates: "Templates",
         market: "Market",
+        faq: "FAQ",
         users: "Users",
       };
 
       let html = `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 fade-in">
                             <div>
                               <h2 class="text-2xl md:text-3xl font-extrabold text-slate-950">${pageLabels[entity] || entity}</h2>
+                              ${entity === "faq" ? `<p class="mt-1 text-sm text-slate-500">Bantuan dan jawaban atas pertanyaan umum.</p>` : ""}
                             </div>
                             ${isAdmin ? `<button onclick="openCrudModal('${entity}')" class="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm shadow-blue-600/20"><i class="fas fa-plus"></i> Tambah Data</button>` : ""}
                         </div>`;
+
+      if (entity === "faq") {
+        html += `<div class="mx-auto grid max-w-4xl gap-6 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:p-5 fade-in">`;
+        if (dataList.length === 0) {
+          html += `<div class="p-10 text-center text-slate-500">
+                    <div class="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-full bg-violet-100 text-violet-500"><i class="fas fa-circle-question"></i></div>
+                    <p class="font-bold text-slate-700">FAQ belum tersedia.</p>
+                    <p class="mt-1 text-sm">${isAdmin ? "Klik Tambah Data untuk membuat FAQ baru." : "Pertanyaan umum akan tampil setelah admin menambahkannya."}</p>
+                  </div>`;
+        } else {
+          html += renderFaqGroups(dataList, isAdmin);
+        }
+        html += `</div>`;
+        content.innerHTML = html;
+        return;
+      }
 
       html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">`;
 
@@ -1118,7 +1341,7 @@
           item.question ||
           item.name ||
           item.username;
-        html += `<h3 class="font-extrabold text-lg text-slate-950 mb-2 line-clamp-2">${title}</h3>`;
+        html += `<h3 class="font-extrabold text-lg text-slate-950 mb-2 line-clamp-2">${escapeHtml(title)}</h3>`;
 
         if (item.price) {
           const formattedPrice = isNaN(item.price) ? item.price : "Rp " + parseInt(item.price).toLocaleString("id-ID");
@@ -1133,9 +1356,16 @@
           item.role ||
           item.username;
         if (desc)
-          html += `<p class="text-sm text-slate-600 mb-4 line-clamp-3">${desc}</p>`;
+          html += `<p class="text-sm text-slate-600 mb-4 whitespace-pre-line ${entity === "faq" ? "" : "line-clamp-3"}">${escapeHtml(desc)}</p>`;
 
-        html += `<div class="mt-auto pt-4 flex gap-2 border-t border-slate-100">`;
+        if (entity === "faq" && isAdmin) {
+          const isActive = !["nonaktif", "inactive", "draft", "false", "0"].includes(
+            String(item.status || "").trim().toLowerCase(),
+          );
+          html += `<span class="mb-4 inline-flex w-fit rounded-full px-2.5 py-1 text-xs font-bold ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"}">${isActive ? "Aktif" : "Nonaktif"}</span>`;
+        }
+
+        html += `<div class="mt-auto pt-4 flex flex-wrap gap-2 border-t border-slate-100">`;
 
         const linkUrl =
           item.content_url ||
@@ -1145,11 +1375,16 @@
           item.buy_link;
         const demoUrl = item.demo_link;
 
+        if (entity === "market") {
+          html += `<button onclick="viewMarketProduct('${item.id}')" class="flex-1 bg-purple-50 text-purple-700 py-2 px-3 rounded-lg text-sm font-bold hover:bg-purple-100 transition flex items-center justify-center"><i class="fas fa-eye mr-1"></i> View</button>`;
+        }
+
         if (linkUrl) {
           const buttonText = entity === 'market' ? 'Bayar' : 'Download';
           html += `<a href="${linkUrl}" target="_blank" class="flex-1 text-center bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-bold hover:bg-blue-100 transition flex items-center justify-center"><i class="fas fa-external-link-alt mr-1"></i> ${buttonText}</a>`;
         } else if (
           !isAdmin &&
+          entity !== "faq" &&
           entity !== "templates" &&
           entity !== "market"
         ) {
@@ -1182,6 +1417,10 @@
     let currentEditingId = null;
 
     function openCrudModal(entity, encodedData = null) {
+      if (!currentUser || currentUser.role !== "admin") {
+        showToast("Hanya admin yang dapat mengelola data.", "error");
+        return;
+      }
       currentEditingEntity = entity;
       const titleEl = document.getElementById("crud-modal-title");
       const fieldsContainer = document.getElementById("crud-form-fields");
@@ -1199,12 +1438,17 @@
 
       const fields = schema[entity];
       fields.forEach((f) => {
-        const val = data[f.key] || "";
+        const val = data[f.key] || (entity === "faq" && f.key === "status" ? "aktif" : "");
         let inputHtml = "";
         if (f.type === "textarea") {
-          inputHtml = `<textarea id="field_${f.key}" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50">${val}</textarea>`;
+          inputHtml = `<textarea id="field_${f.key}" rows="3" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50">${escapeHtml(val)}</textarea>`;
+        } else if (f.type === "select") {
+          const options = f.options.map((option) =>
+            `<option value="${escapeHtml(option.value)}" ${option.value === val ? "selected" : ""}>${escapeHtml(option.label)}</option>`,
+          ).join("");
+          inputHtml = `<select id="field_${f.key}" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50">${options}</select>`;
         } else {
-          inputHtml = `<input type="${f.type}" id="field_${f.key}" value="${val}" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50">`;
+          inputHtml = `<input type="${f.type}" id="field_${f.key}" value="${escapeHtml(val)}" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 bg-slate-50">`;
         }
         fieldsContainer.innerHTML += `
                     <div>
@@ -1222,6 +1466,10 @@
     }
 
     async function submitCrudForm() {
+      if (!currentUser || currentUser.role !== "admin") {
+        showToast("Hanya admin yang dapat menyimpan perubahan.", "error");
+        return;
+      }
       const entity = currentEditingEntity;
       const fields = schema[entity];
       const payload = { id: currentEditingId || generateId() };
@@ -1230,12 +1478,21 @@
         payload[f.key] = document.getElementById(`field_${f.key}`).value;
       });
 
+      if (entity === "faq" && (!payload.question.trim() || !payload.answer.trim())) {
+        showToast("Pertanyaan dan jawaban wajib diisi.", "error");
+        return;
+      }
+
       closeCrudModal();
       const action = currentEditingId ? "update" : "create";
       await performDataOperation(entity, action, payload);
     }
 
     async function deleteData(entity, id) {
+      if (!currentUser || currentUser.role !== "admin") {
+        showToast("Hanya admin yang dapat menghapus data.", "error");
+        return;
+      }
       if (!confirm("Yakin ingin menghapus data ini?")) return;
       await performDataOperation(entity, "delete", { id: id });
     }
@@ -1264,7 +1521,10 @@
         try {
           const reqBody = {
             action: action,
-            sheetName: entity.charAt(0).toUpperCase() + entity.slice(1),
+            authToken: currentUser?.sessionToken || "",
+            sheetName: entity === "faq"
+              ? "FAQ"
+              : entity.charAt(0).toUpperCase() + entity.slice(1),
             data: payload,
           };
 
