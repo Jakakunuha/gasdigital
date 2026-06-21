@@ -641,7 +641,10 @@
         currentMenu = "home";
       }
 
-      if (!IS_PREVIEW) fetchAllDataFromServer();
+      if (!IS_PREVIEW) {
+        fetchAllDataFromServer();
+        if (currentUser?.role === "admin") fetchAdminUsers();
+      }
 
       setTimeout(() => {
         document.getElementById("init-loader").classList.add("hidden");
@@ -1291,6 +1294,48 @@
                             ${isAdmin ? `<button onclick="openCrudModal('${entity}')" class="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm shadow-blue-600/20"><i class="fas fa-plus"></i> Tambah Data</button>` : ""}
                         </div>`;
 
+      if (entity === "users") {
+        if (!isAdmin) {
+          content.innerHTML = `<div class="rounded-xl border border-red-200 bg-red-50 p-8 text-center text-red-700"><i class="fas fa-lock mb-3 text-2xl"></i><p class="font-bold">Akses khusus admin.</p></div>`;
+          return;
+        }
+
+        html += `<div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm fade-in">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[760px] text-left text-sm">
+              <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                  <th class="px-5 py-4 font-extrabold">Name</th>
+                  <th class="px-5 py-4 font-extrabold">Username</th>
+                  <th class="px-5 py-4 font-extrabold">Password</th>
+                  <th class="px-5 py-4 font-extrabold">Role</th>
+                  <th class="px-5 py-4 text-right font-extrabold">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">`;
+        if (dataList.length === 0) {
+          html += `<tr><td colspan="5" class="px-5 py-12 text-center text-slate-500">Data user belum tersedia atau sedang dimuat.</td></tr>`;
+        } else {
+          dataList.forEach((user) => {
+            const encodedUser = encodeBase64Safe(JSON.stringify(user));
+            const isUserAdmin = String(user.role || "").toLowerCase() === "admin";
+            html += `<tr class="hover:bg-slate-50/70">
+              <td class="px-5 py-4 font-bold text-slate-900">${escapeHtml(user.name || "-")}</td>
+              <td class="px-5 py-4 text-slate-600">${escapeHtml(user.username || "-")}</td>
+              <td class="px-5 py-4"><code class="rounded bg-slate-100 px-2 py-1 text-xs text-slate-700">${escapeHtml(user.password || "-")}</code></td>
+              <td class="px-5 py-4"><span class="rounded-full px-2.5 py-1 text-xs font-bold ${isUserAdmin ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}">${escapeHtml(user.role || "-")}</span></td>
+              <td class="px-5 py-4"><div class="flex justify-end gap-2">
+                <button onclick="openCrudModal('users', '${encodedUser}')" class="grid h-9 w-9 place-items-center rounded-lg bg-amber-100 text-amber-700 hover:bg-amber-200" title="Edit user"><i class="fas fa-edit"></i></button>
+                <button onclick="deleteData('users', '${user.id}')" class="grid h-9 w-9 place-items-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200" title="Hapus user"><i class="fas fa-trash"></i></button>
+              </div></td>
+            </tr>`;
+          });
+        }
+        html += `</tbody></table></div></div>`;
+        content.innerHTML = html;
+        return;
+      }
+
       if (entity === "faq") {
         html += `<div class="mx-auto grid max-w-4xl gap-6 rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:p-5 fade-in">`;
         if (dataList.length === 0) {
@@ -1674,6 +1719,32 @@
       }
     }
 
+    async function fetchAdminUsers() {
+      if (!currentUser || currentUser.role !== "admin" || IS_PREVIEW) return;
+      try {
+        if (!currentUser.sessionToken) {
+          throw new Error("Sesi admin lama. Silakan logout lalu login kembali.");
+        }
+        const res = await fetch(GAS_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "readUsers",
+            authToken: currentUser.sessionToken,
+          }),
+        });
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        const result = await res.json();
+        if (result.status !== "success" || !Array.isArray(result.data)) {
+          throw new Error(result.message || "Data user gagal dimuat.");
+        }
+        appData.users = result.data;
+        renderApp();
+      } catch (error) {
+        console.warn("Gagal memuat data user:", error.message);
+        if (currentMenu === "users") showToast(error.message, "error");
+      }
+    }
+
     function openLogin() {
       document.getElementById("login-modal").classList.remove("hidden");
     }
@@ -1751,6 +1822,7 @@
       btn.disabled = false;
       document.getElementById("login-form").reset();
       renderApp();
+      if (currentUser.role === "admin") fetchAdminUsers();
     }
 
     function processLoginFail(btn, text, msg = "Username/Password salah!") {
