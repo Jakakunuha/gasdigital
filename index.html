@@ -1007,164 +1007,418 @@
                 <div id="public-landing-page" class="w-full fade-in pb-10">
                     
                     <!-- 1. SECTION BERANDA (HERO DESAIN MODERN 2-KOLOM TIPE SAAS) -->
-                    <section id="home" class="relative pt-16 pb-20 lg:pt-24 lg:pb-28 overflow-hidden bg-slate-50 border-b border-slate-200">
-                        <div class="section-shell relative z-10">
-                            <div class="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center">
-                                <!-- KOLOM KIRI: TEKS & TOMBOL -->
-                                <div class="text-center lg:text-left pt-8 lg:pt-0">
-                                    <!-- Badge -->
-                                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-extrabold text-xs tracking-wider mb-8 uppercase">
-                                        <i class="fas fa-bolt"></i>
-                                        LMS Generasi Baru
-                                    </div>
-                                    
-                                    <!-- Heading -->
-                                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.15]">
-                                        Kuasai <span class="text-blue-600">Web App</span> & <br class="hidden sm:block"/>
-                                        <span class="text-blue-600">Google Sheets</span> Database
-                                    </h1>
-                                    
-                                    <!-- Subheading -->
-                                    <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                                        Platform pembelajaran terlengkap untuk membangun sistem informasi modern, cepat, dan tanpa biaya server bulanan.
-                                    </p>
-                                    
-                                    <!-- Buttons -->
-                                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
-                                        <a href="#pricing" class="inline-flex justify-center items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1">
-                                            <i class="fas fa-graduation-cap text-xl"></i> Mulai Belajar
-                                        </a>
-                                        <a href="#about" class="inline-flex justify-center items-center gap-3 bg-white text-blue-600 border border-slate-200 shadow-sm px-8 py-4 rounded-lg font-bold text-lg hover:bg-slate-50 hover:shadow-md transition-all duration-300">
-                                            <i class="fas fa-play text-lg"></i> Pelajari Lebih Lanjut
-                                        </a>
-                                    </div>
+                  <!-- 1. SECTION BERANDA (HERO DESAIN MODERN 2-KOLOM TIPE SAAS) -->
+<section id="home" class="relative pt-16 pb-20 lg:pt-24 lg:pb-28 overflow-hidden bg-slate-50 border-b border-slate-200">
+    
+    <div class="section-shell relative z-10">
+        
+        <div class="grid lg:grid-cols-2 gap-16 lg:gap-10 items-center">
 
-                                    <!-- Features Grid -->
-                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto lg:mx-0">
-                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-blue-600 text-xl mb-3 transform hover:scale-105 transition duration-300">
-                                                <i class="fas fa-code"></i>
-                                            </div>
-                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Web App Modern</h4>
-                                            <p class="text-xs text-gray-500 font-medium">HTML, CSS, JS</p>
-                                        </div>
-                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-emerald-500 text-xl mb-3 transform hover:scale-105 transition duration-300">
-                                                <i class="fas fa-table"></i>
-                                            </div>
-                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Google Sheets</h4>
-                                            <p class="text-xs text-gray-500 font-medium">Database Gratis</p>
-                                        </div>
-                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-amber-500 text-xl mb-3 transform hover:scale-105 transition duration-300">
-                                                <i class="fas fa-cogs"></i>
-                                            </div>
-                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Apps Script</h4>
-                                            <p class="text-xs text-gray-500 font-medium">Integrasi Kuat</p>
-                                        </div>
-                                        <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
-                                            <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-sky-500 text-xl mb-3 transform hover:scale-105 transition duration-300">
-                                                <i class="fas fa-cloud"></i>
-                                            </div>
-                                            <h4 class="font-bold text-sm text-gray-900 mb-1">Tanpa Server</h4>
-                                            <p class="text-xs text-gray-500 font-medium">Hemat Biaya</p>
-                                        </div>
-                                    </div>
-                                </div>
+            <!-- KOLOM KIRI -->
+            <div class="text-center lg:text-left pt-8 lg:pt-0">
 
-                                <!-- KOLOM KANAN: GAMBAR HERO/ILUSTRASI -->
-                                <div class="relative flex justify-center lg:justify-end mt-4 lg:mt-0">
-                                    <div class="relative w-full max-w-lg lg:max-w-none">
-                                        <div class="relative z-10 overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-2xl shadow-slate-900/10">
-                                            <img src="https://unsplash.com/photos/m_HRfLhgABo/download?force=true&w=1200" alt="Workspace pengembangan web app" class="aspect-[4/3] w-full rounded-md object-cover" onerror="this.src='https://unsplash.com/photos/0chr85LZuTc/download?force=true&w=1200'">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 border border-blue-100 font-extrabold text-xs tracking-wider mb-8 uppercase">
+                    <i class="fas fa-bolt"></i>
+                    LMS Generasi Baru
+                </div>
+
+                <!-- Heading -->
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight leading-[1.15]">
+                    Kuasai <span class="text-blue-600">Web App</span> & <br class="hidden sm:block"/>
+                    <span class="text-blue-600">Google Sheets</span> Database
+                </h1>
+
+                <!-- Subheading -->
+                <p class="text-lg md:text-xl text-gray-600 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                    Platform pembelajaran terlengkap untuk membangun sistem informasi modern, cepat, dan tanpa biaya server bulanan.
+                </p>
+
+                <!-- Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
+                    <a href="#pricing" class="inline-flex justify-center items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1">
+                        <i class="fas fa-graduation-cap text-xl"></i> Mulai Belajar
+                    </a>
+
+                    <a href="#about" class="inline-flex justify-center items-center gap-3 bg-white text-blue-600 border border-slate-200 shadow-sm px-8 py-4 rounded-lg font-bold text-lg hover:bg-slate-50 hover:shadow-md transition-all duration-300">
+                        <i class="fas fa-play text-lg"></i> Pelajari Lebih Lanjut
+                    </a>
+                </div>
+
+                <!-- Features -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto lg:mx-0">
+
+                    <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                        <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-blue-600 text-xl mb-3">
+                            <i class="fas fa-code"></i>
                         </div>
-                    </section>
+                        <h4 class="font-bold text-sm text-gray-900">Web App Modern</h4>
+                        <p class="text-xs text-gray-500">HTML, CSS, JS</p>
+                    </div>
+
+                    <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                        <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-emerald-500 text-xl mb-3">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-gray-900">Google Sheets</h4>
+                        <p class="text-xs text-gray-500">Database Gratis</p>
+                    </div>
+
+                    <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                        <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-amber-500 text-xl mb-3">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-gray-900">Apps Script</h4>
+                        <p class="text-xs text-gray-500">Integrasi Kuat</p>
+                    </div>
+
+                    <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                        <div class="w-12 h-12 bg-white rounded-lg shadow-sm border border-slate-200 flex items-center justify-center text-sky-500 text-xl mb-3">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h4 class="font-bold text-sm text-gray-900">Tanpa Server</h4>
+                        <p class="text-xs text-gray-500">Hemat Biaya</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- KOLOM KANAN (FIX GAMBAR BLUR + MODERN) -->
+            <div class="relative">
+
+                <!-- glow background -->
+                <div class="absolute -inset-6 bg-blue-200/20 blur-3xl rounded-full"></div>
+
+                <div class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl transition hover:shadow-3xl">
+
+                    <!-- IMPORTANT FIX: tanpa p-3 -->
+                    <div class="p-2">
+
+                        <img 
+                            src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjaYx2O76lRvGTBl617QWUrRpZlb2zCpZKEomse1yWOyvy_YqQIAh78h05ZxtGNidsRZSrlnhCk2aAd0divLL8TmY66HKsreVqBzRZGVRDPb8P84-F3F0Hb6y2GPiotXx42QHU3oZB2kWbq4suo5iopchUXQ0sS2zQZN3zFXm7YZ25_H8kpkEgSE9LDw_YJ/s1600/gasdigital%20ai.png"
+                            alt="Workspace pengembangan web app"
+                            
+                            class="w-full h-auto object-contain rounded-2xl bg-white transition duration-300 group-hover:scale-[1.03]"
+                        />
+
+                    </div>
+
+                    <!-- ring overlay -->
+                    <div class="absolute inset-0 rounded-3xl ring-1 ring-inset ring-slate-900/5"></div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
 
                     <!-- 2. SECTION TENTANG -->
-                    <section id="about" class="relative pt-20 pb-20 lg:pt-28 lg:pb-32 overflow-hidden bg-white">
-                        
-                        <!-- Bagian 1: Mengapa Memilih -->
-                        <div class="grid md:grid-cols-2 gap-12 items-center section-shell mb-20">
-                             <div class="relative">
-                                <div class="absolute inset-0 bg-blue-50 rounded-lg transform rotate-2 scale-105"></div>
-                                <img src="https://unsplash.com/photos/ic9Ns3_90yw/download?force=true&w=1200" alt="Dashboard bisnis digital GasDigital" class="relative aspect-[4/3] rounded-lg shadow-xl w-full object-cover border-4 border-white">
-                            </div>
-                            <div>
-                                <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 font-bold text-xs tracking-wider mb-4 uppercase">
-                                    Keunggulan Utama
-                                </div>
-                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Mengapa Memilih GasDigital?</h2>
-                                <p class="text-lg text-gray-600 mb-6 leading-relaxed">GasDigital berdedikasi untuk mencetak developer modern yang praktis dan solutif. Kami memanfaatkan ekosistem Google Workspace untuk efisiensi maksimum, tanpa kerumitan setup server, sehingga Anda bisa fokus pada pengembangan fitur.</p>
-                                <ul class="space-y-4">
-                                    <li class="flex items-start"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-3 text-xl"></i> <span class="text-gray-700 font-medium text-lg">Teknologi Web App Mutakhir</span></li>
-                                    <li class="flex items-start"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-3 text-xl"></i> <span class="text-gray-700 font-medium text-lg">Database Gratis (Google Sheets)</span></li>
-                                    <li class="flex items-start"><i class="fas fa-check-circle text-emerald-500 mt-1 mr-3 text-xl"></i> <span class="text-gray-700 font-medium text-lg">Akses Materi Selamanya (Lifetime)</span></li>
-                                </ul>
-                            </div>
+<section id="about" class="relative py-24 overflow-hidden bg-gradient-to-b from-white via-blue-50/30 to-white">
+
+    <!-- Dekorasi -->
+    <div class="absolute top-20 left-0 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-40"></div>
+    <div class="absolute bottom-10 right-0 w-80 h-80 bg-indigo-100 rounded-full blur-3xl opacity-40"></div>
+
+
+    <!-- Bagian Keunggulan -->
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 mb-24">
+
+        <div class="grid lg:grid-cols-2 gap-14 items-center">
+
+
+            <!-- IMAGE -->
+<div class="relative order-2 lg:order-1">
+
+    <!-- glow background -->
+    <div class="absolute -inset-6 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 blur-3xl rounded-3xl"></div>
+
+    <!-- rotating soft layer -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-3xl rotate-2 opacity-10"></div>
+
+<div class="relative order-2 lg:order-1 group">
+
+    <!-- glow background -->
+    <div class="absolute -inset-6 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 blur-3xl rounded-3xl opacity-70 group-hover:opacity-100 transition duration-500"></div>
+
+    <!-- rotating soft layer -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-3xl rotate-2 opacity-10 group-hover:rotate-3 group-hover:scale-105 transition duration-500"></div>
+
+    <!-- main card -->
+    <div class="relative bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
+
+        <div class="p-2">
+
+            <img 
+                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhX4F1pYUH3luDZzRFd5EAJon4UHP8lfL28jBqh1bh9QW0W02l9PZf8qANPFzbjMEYOVUui9w60n7jCIs2azneN_3kRdL5RgLrzH0Miek2M81m9XWFyxMJJLu8nEARkED8ppiErIAdZenTRTrJD3LmQ8qCiy5P1MtQ0vEB_2TDAKsPXp1gZHR7GJUgjbH7l/s1600/Pakar%20Web%20App%20&%20GAS%20Database.webp"
+                
+                alt="GasDigital Web App"
+                
+                class="w-full h-auto object-contain rounded-2xl transition duration-500 group-hover:scale-[1.05]"
+            />
+
+        </div>
+
+        <!-- ring overlay -->
+        <div class="absolute inset-0 rounded-3xl ring-1 ring-inset ring-slate-900/5"></div>
+
+    </div>
+
+    <!-- Floating badge -->
+    <div class="absolute -bottom-6 left-6 bg-white shadow-xl rounded-2xl px-5 py-3 border transition duration-500 group-hover:scale-105 group-hover:-translate-y-1">
+
+        <div class="flex items-center gap-3">
+
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center transition group-hover:rotate-12">
+                <i class="fas fa-robot"></i>
+            </div>
+
+            <div>
+                <p class="text-xs text-gray-500">Powered By</p>
+                <p class="font-bold text-gray-900">Gemini AI + GAS</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- Floating badge -->
+    <div class="absolute -bottom-6 left-6 bg-white shadow-xl rounded-2xl px-5 py-3 border">
+
+        <div class="flex items-center gap-3">
+
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
+                <i class="fas fa-robot"></i>
+            </div>
+
+            <div>
+                <p class="text-xs text-gray-500">Powered By</p>
+                <p class="font-bold text-gray-900">Gemini AI + GAS</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+            <!-- TEXT -->
+            <div class="order-1 lg:order-2">
+
+                <span class="inline-flex px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-bold mb-5">
+                    KEUNGGULAN GASDIGITAL
+                </span>
+
+
+                <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight">
+
+                    Bangun Web App Modern
+                    <span class="text-blue-600">
+                    Tanpa Server Rumit
+                    </span>
+
+                </h2>
+
+
+                <p class="mt-6 text-lg text-gray-600 leading-relaxed">
+
+                    GasDigital memanfaatkan teknologi
+                    Google Apps Script, Gemini AI, Blogger,
+                    dan Spreadsheet untuk membuat aplikasi
+                    profesional dengan biaya efisien.
+
+                </p>
+
+
+
+                <div class="mt-8 space-y-5">
+
+
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                            <i class="fas fa-check text-emerald-600"></i>
                         </div>
 
-                        <!-- Bagian 2: Alur Kerja (Cara Kerja) -->
-                        <div class="section-shell">
-                            <div class="text-center max-w-3xl mx-auto mb-16">
-                                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Membangun Aplikasi Kini Lebih Mudah: <br class="hidden sm:block"/><span class="text-blue-600">Alur Kerja GasDigital</span></h3>
-                            </div>
+                        <span class="text-lg font-medium">
+                        Web App Professional
+                        </span>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 relative">
-                                <!-- Garis penghubung untuk desktop -->
-                                <div class="hidden lg:block absolute top-12 left-10 right-10 h-0.5 bg-blue-200 z-0"></div>
+                    </div>
 
-                                <!-- Step 1 -->
-                                <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-blue-50 flex items-center justify-center text-blue-600 text-2xl mb-6 group-hover:scale-105 group-hover:border-blue-100 transition duration-300">
-                                        <i class="fas fa-lightbulb"></i>
-                                    </div>
-                                    <h4 class="font-bold text-gray-900 text-lg mb-2">1. Ketik Ide Aplikasi Anda</h4>
-                                    <p class="text-gray-600 text-sm">Deskripsikan ide dan kebutuhan aplikasi yang ingin Anda bangun secara spesifik.</p>
-                                </div>
 
-                                <!-- Step 2 -->
-                                <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-emerald-50 flex items-center justify-center text-emerald-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-emerald-100 transition duration-300">
-                                        <i class="fas fa-robot"></i>
-                                    </div>
-                                    <h4 class="font-bold text-gray-900 text-lg mb-2">2. Rekomendasi Sistem Cerdas</h4>
-                                    <p class="text-gray-600 text-sm">Sistem kami akan secara otomatis merekomendasikan alur kerja dan fitur yang paling relevan untuk kebutuhan Anda.</p>
-                                </div>
 
-                                <!-- Step 3 -->
-                                <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-amber-50 flex items-center justify-center text-amber-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-amber-100 transition duration-300">
-                                        <i class="fas fa-sliders-h"></i>
-                                    </div>
-                                    <h4 class="font-bold text-gray-900 text-lg mb-2">3. Kendali Penuh di Tangan Anda</h4>
-                                    <p class="text-gray-600 text-sm">Anda bebas untuk menyetujui rekomendasi, meminta revisi, atau menulis alur sistemnya sendiri.</p>
-                                </div>
+                    <div class="flex gap-4">
 
-                                <!-- Step 4 -->
-                                <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-purple-50 flex items-center justify-center text-purple-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-purple-100 transition duration-300">
-                                        <i class="fas fa-code"></i>
-                                    </div>
-                                    <h4 class="font-bold text-gray-900 text-lg mb-2">4. Generate Backend & Frontend Otomatis</h4>
-                                    <p class="text-gray-600 text-sm">Sistem kami akan men-generate kode Backend (Google Apps Script) dan Frontend (Blogger/Website) secara otomatis untuk Anda.</p>
-                                </div>
-
-                                <!-- Step 5 -->
-                                <div class="relative z-10 flex flex-col items-center text-center group">
-                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-rose-50 flex items-center justify-center text-rose-500 text-2xl mb-6 group-hover:scale-105 group-hover:border-rose-100 transition duration-300">
-                                        <i class="fas fa-rocket"></i>
-                                    </div>
-                                    <h4 class="font-bold text-gray-900 text-lg mb-2">5. Deployment Sederhana</h4>
-                                    <p class="text-gray-600 text-sm">Tinggal ikuti petunjuk dan langkah pengerjaan yang disediakan hingga aplikasi Anda siap dirilis dan digunakan.</p>
-                                </div>
-                            </div>
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                            <i class="fas fa-check text-emerald-600"></i>
                         </div>
 
-                    </section>
+                        <span class="text-lg font-medium">
+                        Database Google Spreadsheet
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="flex gap-4">
+
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                            <i class="fas fa-check text-emerald-600"></i>
+                        </div>
+
+                        <span class="text-lg font-medium">
+                        Otomasi Google Apps Script
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- WORKFLOW -->
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+
+
+        <div class="text-center mb-16">
+
+            <span class="text-blue-600 font-bold">
+            CARA KERJA
+            </span>
+
+
+            <h3 class="text-4xl font-extrabold mt-3">
+                Dari Ide Menjadi Aplikasi
+            </h3>
+
+            <p class="text-gray-600 mt-4">
+            Workflow sederhana menggunakan AI dan Google Ecosystem
+            </p>
+
+
+        </div>
+
+
+
+
+        <div class="grid md:grid-cols-5 gap-8">
+
+
+        <!-- ITEM -->
+
+        <div class="text-center">
+
+            <div class="mx-auto w-20 h-20 rounded-3xl bg-blue-600 text-white flex items-center justify-center text-3xl shadow-xl">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+
+            <h4 class="font-bold mt-5">
+            Ide
+            </h4>
+
+            <p class="text-sm text-gray-600 mt-2">
+            Tentukan kebutuhan aplikasi
+            </p>
+
+        </div>
+
+
+
+        <div class="text-center">
+
+            <div class="mx-auto w-20 h-20 rounded-3xl bg-indigo-600 text-white flex items-center justify-center text-3xl shadow-xl">
+                <i class="fas fa-robot"></i>
+            </div>
+
+            <h4 class="font-bold mt-5">
+            Gemini AI
+            </h4>
+
+            <p class="text-sm text-gray-600 mt-2">
+            Analisa sistem otomatis
+            </p>
+
+        </div>
+
+
+
+
+        <div class="text-center">
+
+            <div class="mx-auto w-20 h-20 rounded-3xl bg-emerald-600 text-white flex items-center justify-center text-3xl shadow-xl">
+                <i class="fas fa-database"></i>
+            </div>
+
+            <h4 class="font-bold mt-5">
+            Spreadsheet
+            </h4>
+
+            <p class="text-sm text-gray-600 mt-2">
+            Database fleksibel
+            </p>
+
+        </div>
+
+
+
+        <div class="text-center">
+
+            <div class="mx-auto w-20 h-20 rounded-3xl bg-purple-600 text-white flex untuk items-center justify-center text-3xl shadow-xl">
+                <i class="fas fa-code"></i>
+            </div>
+
+            <h4 class="font-bold mt-5">
+            Generate App
+            </h4>
+
+            <p class="text-sm text-gray-600 mt-2">
+            Frontend & Backend
+            </p>
+
+        </div>
+
+
+
+
+        <div class="text-center">
+
+            <div class="mx-auto w-20 h-20 rounded-3xl bg-rose-600 text-white flex items-center justify-center text-3xl shadow-xl">
+                <i class="fas fa-rocket"></i>
+            </div>
+
+            <h4 class="font-bold mt-5">
+            Deploy
+            </h4>
+
+            <p class="text-sm text-gray-600 mt-2">
+            Siap digunakan
+            </p>
+
+        </div>
+
+
+        </div>
+
+    </div>
+
+
+</section>
 
                     <!-- SECTION KOLEKSI APLIKASI TERBARU -->
                     <section id="portofolio" class="py-24 border-b border-slate-200 bg-slate-50">
