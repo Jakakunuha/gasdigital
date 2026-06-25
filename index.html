@@ -197,6 +197,8 @@
             class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Portofolio</a>
           <a href="#pricing"
             class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Harga</a>
+          <a href="#contact"
+            class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Kontak</a>
           <a href="#articles"
             class="px-3 py-2 rounded-lg text-sm text-slate-600 hover:text-blue-700 hover:bg-blue-50 font-semibold transition">Artikel</a>
           <a href="#faq"
@@ -244,6 +246,8 @@
           class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Portofolio</a>
         <a onclick="toggleMobilePublicNav(false)" href="#pricing"
           class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Harga</a>
+        <a onclick="toggleMobilePublicNav(false)" href="#contact"
+          class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Kontak</a>
         <a onclick="toggleMobilePublicNav(false)" href="#articles"
           class="px-3 py-3 rounded-lg text-sm font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700">Artikel</a>
         <a onclick="toggleMobilePublicNav(false)" href="#faq"
@@ -992,6 +996,249 @@
       nav.classList.toggle("hidden", !shouldOpen);
     }
 
+    let portfolioShowAll = false;
+    let portfolioPage = 1;
+    const PORTFOLIO_LATEST_LIMIT = 9;
+    const PORTFOLIO_PAGE_SIZE = 12;
+    const portfolioItems = [
+      {
+        title: "Desa Digital & Sentra UMKM",
+        category: "Pemerintahan",
+        color: "blue",
+        image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEmn1lxsEc-9iUuD7cM0Dgja2prAxuN_TInUgrtAIXACRd16QuLVQlhLaQpH5I65ZNvShy6vyIS9iH4GV0cv0Kqbcshc0vxHKcAJwcW213o5cUNZJcfUgt2uJvnW1F1FaM48d1_EHAxImCi6uuqQtTTVqjLqe5LGSCZpYxOImcTtjfnCBKwnwggGkU2qa-/s320/selamat%20datang%20pakar%20web.webp",
+        description: "Platform digital untuk mengembangkan usaha kecil dan menengah dengan berbagai layanan dan dukungan.",
+        link: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNvw-rTZvsSWC3LPxgokEe4_Qq8xK2eVboFp5nzMs065TxoxL9EQGteQBKdro_cXnU6CXScUw2GmAgWEWajl7Xug2YthSIPz559Z6mYtvZBYOMUB8npznCn3ZxSblsQqq13SwZXkZU9XrlsAoua-sPi8-6ItvNgdsCfmR3Jh9lnPQEaJTBX2XRTzDGVm_P/s320/Web%20taman%20agung.png",
+      },
+      {
+        title: "Dashboard Penjualan POS",
+        category: "Keuangan",
+        color: "emerald",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop",
+        description: "Sistem point of sales dengan analitik dan grafik realtime untuk memonitor omset bisnis.",
+        link: "https://pmjakak.blogspot.com/p/sim-penjualan-pos.html",
+      },
+      {
+        title: "Aplikasi SPMB Online",
+        category: "Pendaftaran",
+        color: "purple",
+        image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=600&auto=format&fit=crop",
+        description: "Platform penerimaan siswa baru secara online, dilengkapi fitur upload berkas dan seleksi otomatis.",
+        link: "https://pmjakak.blogspot.com/p/sim-spmb-sekolah.html",
+      },
+      {
+        title: "Aplikasi Absensi Online",
+        category: "Produktivitas",
+        color: "amber",
+        image: "https://drive.google.com/thumbnail?id=1vEMDZePo0AeOkYP8Lhda2sJtYSG2eOFb&sz=w1600",
+        description: "Sistem tracking kehadiran secara mandiri dengan fitur geolokasi dan integrasi langsung ke spreadsheet HRD.",
+        link: "https://pmjakak.blogspot.com/p/e-absen-wajah.html",
+      },
+      {
+        title: "Aplikasi E-Learning",
+        category: "Pembelajaran",
+        color: "rose",
+        image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=600&auto=format&fit=crop",
+        description: "Platform belajar digital untuk menyajikan materi video, kuis interaktif, dan tracking progres siswa secara realtime.",
+        link: "https://e-learning-hazel-theta.vercel.app/",
+      },
+      {
+        title: "Aplikasi Tabungan Anak TK",
+        category: "Sekolah",
+        color: "cyan",
+        image: "https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?q=80&w=600&auto=format&fit=crop",
+        description: "Sistem pencatatan tabungan harian siswa TK yang simpel, akurat, dan mudah digunakan oleh guru atau admin sekolah.",
+        link: "https://pmjakak.blogspot.com/p/aplikasi-tabungan-anak-tk.html",
+      },
+      {
+        title: "E-Sertifikat Online",
+        category: "Layanan",
+        color: "indigo",
+        image: "https://drive.google.com/thumbnail?id=1jCy_z4fYwYS2F6uVfiDGEI_t3HTxyYF0&sz=w1600",
+        description: "Aplikasi stok barang, mutasi, dan laporan inventaris untuk kantor, sekolah, maupun usaha.",
+        link: "https://pmjakak.blogspot.com/p/smart-cert.html",
+      },
+      {
+        title: "Smart Survey Kepuasan Sekolah",
+        category: "Layanan",
+        color: "sky",
+        image: "https://drive.google.com/thumbnail?id=1wUxvJIVUI_D6zGAA_d_ICoC9dXEuFCKo&sz=w1600",
+        description: "Kelola jadwal reservasi, antrean, dan konfirmasi pelanggan dari satu dashboard berbasis web.",
+        link: "https://pmjakak.blogspot.com/p/smart-survey-premium-sekolah.html",
+      },
+      {
+        title: "CRM Pelanggan UMKM",
+        category: "Bisnis",
+        color: "teal",
+        image: "https://drive.google.com/thumbnail?id=1tXb-p6Ahc8lKaX-1U1nRUoTOt5L-6o_z&sz=w1600",
+        description: "Pencatatan prospek, follow-up pelanggan, dan ringkasan aktivitas penjualan untuk tim kecil.",
+        link: "https://pmjakak.blogspot.com/p/desa-digital.html",
+      },
+      {
+        title: "Sistem Surat Digital",
+        category: "Administrasi",
+        color: "blue",
+        image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=600&auto=format&fit=crop",
+        description: "Manajemen surat masuk, surat keluar, disposisi, dan arsip digital yang mudah ditelusuri.",
+        link: "#",
+      },
+      {
+        title: "Aplikasi Kas Kelas",
+        category: "Keuangan",
+        color: "emerald",
+        image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=600&auto=format&fit=crop",
+        description: "Pencatatan pemasukan, pengeluaran, tunggakan, dan laporan kas untuk kelas atau komunitas.",
+        link: "#",
+      },
+      {
+        title: "Portal PPDB Mini",
+        category: "Pendaftaran",
+        color: "purple",
+        image: "https://drive.google.com/thumbnail?id=1zIM3cbtKJ5WGTVWCPrTfZO_u_PH7eC53&sz=w1600",
+        description: "Formulir pendaftaran, verifikasi data, dan rekap calon peserta didik dalam alur yang ringkas.",
+        link: "#",
+      },
+      {
+        title: "Dashboard Kinerja Pegawai",
+        category: "HRD",
+        color: "amber",
+        image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=600&auto=format&fit=crop",
+        description: "Pantau target kerja, aktivitas harian, dan capaian tim dengan laporan visual yang rapi.",
+        link: "#",
+      },
+      {
+        title: "Aplikasi Donasi Online",
+        category: "Sosial",
+        color: "rose",
+        image: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=600&auto=format&fit=crop",
+        description: "Publikasi program, pencatatan donatur, dan rekap donasi untuk kegiatan sosial atau lembaga.",
+        link: "#",
+      },
+      {
+        title: "Sistem Agenda Kegiatan",
+        category: "Event",
+        color: "cyan",
+        image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600&auto=format&fit=crop",
+        description: "Kelola agenda, peserta, presensi acara, dan dokumentasi kegiatan dalam satu aplikasi.",
+        link: "#",
+      },
+    ];
+
+    function renderPortfolioCard(item) {
+      const colorClass = {
+        amber: "text-amber-600 bg-amber-600 hover:text-amber-800",
+        blue: "text-blue-600 bg-blue-600 hover:text-blue-800",
+        cyan: "text-cyan-600 bg-cyan-600 hover:text-cyan-800",
+        emerald: "text-emerald-600 bg-emerald-600 hover:text-emerald-800",
+        indigo: "text-indigo-600 bg-indigo-600 hover:text-indigo-800",
+        purple: "text-purple-600 bg-purple-600 hover:text-purple-800",
+        rose: "text-rose-600 bg-rose-600 hover:text-rose-800",
+        sky: "text-sky-600 bg-sky-600 hover:text-sky-800",
+        teal: "text-teal-600 bg-teal-600 hover:text-teal-800",
+      }[item.color] || "text-blue-600 bg-blue-600 hover:text-blue-800";
+      const [textClass, bgClass, hoverClass] = colorClass.split(" ");
+
+      return `<div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
+        <div class="relative overflow-hidden h-56">
+          <div class="absolute inset-0 ${bgClass} opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
+          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
+          <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold ${textClass} shadow-sm z-20">
+            ${escapeHtml(item.category)}
+          </div>
+        </div>
+        <div class="p-6 flex-1 flex flex-col">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">${escapeHtml(item.title)}</h3>
+          <p class="text-gray-600 text-sm mb-6 line-clamp-2">${escapeHtml(item.description)}</p>
+          <a href="${escapeHtml(item.link)}" class="inline-flex items-center ${textClass} font-semibold ${hoverClass} transition mt-auto" target="_blank" rel="noopener noreferrer">
+            Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i>
+          </a>
+        </div>
+      </div>`;
+    }
+
+    function renderPortfolioSectionHtml() {
+      const totalPages = Math.max(1, Math.ceil(portfolioItems.length / PORTFOLIO_PAGE_SIZE));
+      portfolioPage = Math.min(Math.max(1, portfolioPage), totalPages);
+      const visibleItems = portfolioShowAll
+        ? portfolioItems.slice((portfolioPage - 1) * PORTFOLIO_PAGE_SIZE, portfolioPage * PORTFOLIO_PAGE_SIZE)
+        : portfolioItems.slice(0, PORTFOLIO_LATEST_LIMIT);
+
+      const controls = portfolioShowAll
+        ? `<div class="mt-12 flex flex-col items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row">
+            <p class="text-sm font-bold text-slate-500">Halaman ${portfolioPage} dari ${totalPages}</p>
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              <button onclick="setPortfolioPage(${portfolioPage - 1})" ${portfolioPage === 1 ? "disabled" : ""} class="inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-bold ring-1 ring-slate-200 transition ${portfolioPage === 1 ? "cursor-not-allowed bg-slate-100 text-slate-400" : "bg-white text-slate-700 hover:bg-slate-50"}"><i class="fas fa-chevron-left text-xs"></i> Prev</button>
+              ${Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => `<button onclick="setPortfolioPage(${page})" class="grid h-10 min-w-10 place-items-center rounded-lg px-3 text-sm font-extrabold transition ${page === portfolioPage ? "bg-blue-600 text-white shadow-sm shadow-blue-600/20" : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"}">${page}</button>`).join("")}
+              <button onclick="setPortfolioPage(${portfolioPage + 1})" ${portfolioPage === totalPages ? "disabled" : ""} class="inline-flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-bold ring-1 ring-slate-200 transition ${portfolioPage === totalPages ? "cursor-not-allowed bg-slate-100 text-slate-400" : "bg-white text-slate-700 hover:bg-slate-50"}">Next <i class="fas fa-chevron-right text-xs"></i></button>
+            </div>
+          </div>`
+        : `<div class="text-center mt-12">
+            <button onclick="showAllPortfolio()" class="inline-flex items-center justify-center px-8 py-3 border border-slate-300 shadow-sm text-base font-bold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer">
+              Lihat Semua Portofolio
+            </button>
+          </div>`;
+
+      return `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          ${visibleItems.map(renderPortfolioCard).join("")}
+        </div>
+        ${controls}`;
+    }
+
+    function scrollToPortfolio() {
+      requestAnimationFrame(() => {
+        document.getElementById("portofolio")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+
+    function showAllPortfolio() {
+      portfolioShowAll = true;
+      portfolioPage = 1;
+      renderPublicContent();
+      scrollToPortfolio();
+    }
+
+    function setPortfolioPage(page) {
+      portfolioShowAll = true;
+      portfolioPage = page;
+      renderPublicContent();
+      scrollToPortfolio();
+    }
+
+    const CONTACT_WHATSAPP_NUMBER = "62895393099004";
+    const CONTACT_WHATSAPP_DISPLAY = "+62 895-3930-99004";
+    const CONTACT_WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/GrFZQIxDQMi0TNr8gSC9M0";
+    const CONTACT_EMAIL = "allin1belitang@gmail.com";
+    const CONTACT_LOCATION = "Indonesia, layanan online";
+    const CONTACT_HOURS = "Senin-Sabtu, 08.00-21.00 WIB";
+
+    function openContactWhatsApp(message = "") {
+      const defaultMessage = "Halo GasDigital, saya ingin konsultasi kebutuhan aplikasi.";
+      const text = encodeURIComponent(message || defaultMessage);
+      window.open(`https://wa.me/${CONTACT_WHATSAPP_NUMBER}?text=${text}`, "_blank", "noopener,noreferrer");
+    }
+
+    function submitContactForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const name = form.elements.contact_name.value.trim();
+      const phone = form.elements.contact_phone.value.trim();
+      const need = form.elements.contact_need.value.trim();
+      const message = form.elements.contact_message.value.trim();
+
+      if (!name || !phone || !need || !message) {
+        showToast("Lengkapi nama, WhatsApp, jenis kebutuhan, dan pesan.", "error");
+        return;
+      }
+
+      openContactWhatsApp([
+        "Halo GasDigital, saya ingin konsultasi kebutuhan aplikasi.",
+        "",
+        `Nama: ${name}`,
+        `WhatsApp: ${phone}`,
+        `Jenis kebutuhan: ${need}`,
+        `Pesan: ${message}`,
+      ].join("\n"));
+    }
+
     function renderPublicContent() {
       const content = document.getElementById("main-content");
 
@@ -1124,97 +1371,71 @@
     <!-- Bagian Keunggulan -->
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 mb-24">
 
-        <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <div class="grid gap-10 lg:grid-cols-[1.18fr_0.82fr] lg:items-center xl:gap-14">
 
 
-            <!-- IMAGE -->
-<div class="relative order-2 lg:order-1">
+            <!-- MEDIA CARDS -->
+            <div class="relative order-2 lg:order-1">
+                <div class="absolute -inset-6 rounded-3xl bg-gradient-to-r from-blue-400/20 to-indigo-400/20 blur-3xl"></div>
+                <div class="relative grid gap-5 sm:grid-cols-2">
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                        <div class="relative h-44 overflow-hidden bg-slate-900 sm:h-48 xl:h-52">
+                            <img
+                                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhX4F1pYUH3luDZzRFd5EAJon4UHP8lfL28jBqh1bh9QW0W02l9PZf8qANPFzbjMEYOVUui9w60n7jCIs2azneN_3kRdL5RgLrzH0Miek2M81m9XWFyxMJJLu8nEARkED8ppiErIAdZenTRTrJD3LmQ8qCiy5P1MtQ0vEB_2TDAKsPXp1gZHR7GJUgjbH7l/s1600/Pakar%20Web%20App%20&%20GAS%20Database.webp"
+                                alt="Tutorial video GasDigital"
+                                class="h-full w-full object-cover opacity-75 transition duration-500 group-hover:scale-105"
+                            />
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="grid h-16 w-16 place-items-center rounded-full bg-white text-xl text-red-600 shadow-xl transition group-hover:scale-110">
+                                    <i class="fas fa-play"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <div class="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-red-600">
+                                <i class="fab fa-youtube"></i> Video Tutorial
+                            </div>
+                            <h3 class="text-lg font-extrabold text-slate-950 xl:text-xl">Belajar lewat YouTube</h3>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Ikuti panduan visual untuk memahami alur Web App, GAS, dan database Spreadsheet.</p>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-red-700">
+                                <i class="fab fa-youtube"></i> Tutorial YouTube
+                            </a>
+                        </div>
+                    </div>
 
-    <!-- glow background -->
-    <div class="absolute -inset-6 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 blur-3xl rounded-3xl"></div>
-
-    <!-- rotating soft layer -->
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-3xl rotate-2 opacity-10"></div>
-
-<div class="relative order-2 lg:order-1 group">
-
-    <!-- glow background -->
-    <div class="absolute -inset-6 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 blur-3xl rounded-3xl opacity-70 group-hover:opacity-100 transition duration-500"></div>
-
-    <!-- rotating soft layer -->
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-3xl rotate-2 opacity-10 group-hover:rotate-3 group-hover:scale-105 transition duration-500"></div>
-
-    <!-- main card -->
-    <div class="relative bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
-
-        <div class="p-2">
-
-            <img 
-                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhX4F1pYUH3luDZzRFd5EAJon4UHP8lfL28jBqh1bh9QW0W02l9PZf8qANPFzbjMEYOVUui9w60n7jCIs2azneN_3kRdL5RgLrzH0Miek2M81m9XWFyxMJJLu8nEARkED8ppiErIAdZenTRTrJD3LmQ8qCiy5P1MtQ0vEB_2TDAKsPXp1gZHR7GJUgjbH7l/s1600/Pakar%20Web%20App%20&%20GAS%20Database.webp"
-                
-                alt="GasDigital Web App"
-                
-                class="w-full h-auto object-contain rounded-2xl transition duration-500 group-hover:scale-[1.05]"
-            />
-
-        </div>
-
-        <!-- ring overlay -->
-        <div class="absolute inset-0 rounded-3xl ring-1 ring-inset ring-slate-900/5"></div>
-
-    </div>
-
-    <!-- Floating badge -->
-    <div class="absolute -bottom-6 left-6 bg-white shadow-xl rounded-2xl px-5 py-3 border transition duration-500 group-hover:scale-105 group-hover:-translate-y-1">
-
-        <div class="flex items-center gap-3">
-
-            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center transition group-hover:rotate-12">
-                <i class="fas fa-robot"></i>
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                        <div class="relative h-44 overflow-hidden bg-blue-50 sm:h-48 xl:h-52">
+                            <img
+                                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhX4F1pYUH3luDZzRFd5EAJon4UHP8lfL28jBqh1bh9QW0W02l9PZf8qANPFzbjMEYOVUui9w60n7jCIs2azneN_3kRdL5RgLrzH0Miek2M81m9XWFyxMJJLu8nEARkED8ppiErIAdZenTRTrJD3LmQ8qCiy5P1MtQ0vEB_2TDAKsPXp1gZHR7GJUgjbH7l/s1600/Pakar%20Web%20App%20&%20GAS%20Database.webp"
+                                alt="Panduan PDF GasDigital"
+                                class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                            />
+                        </div>
+                        <div class="p-5">
+                            <div class="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-blue-600">
+                                <i class="fas fa-file-pdf"></i> Panduan PDF
+                            </div>
+                            <h3 class="text-lg font-extrabold text-slate-950 xl:text-xl">Baca panduan ringkas</h3>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">Gunakan materi PDF sebagai referensi cepat saat membangun aplikasi sendiri.</p>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-extrabold text-white transition hover:bg-blue-700">
+                                <i class="fas fa-file-pdf"></i> Tutorial PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div>
-                <p class="text-xs text-gray-500">Powered By</p>
-                <p class="font-bold text-gray-900">Gemini AI + GAS</p>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-    <!-- Floating badge -->
-    <div class="absolute -bottom-6 left-6 bg-white shadow-xl rounded-2xl px-5 py-3 border">
-
-        <div class="flex items-center gap-3">
-
-            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
-                <i class="fas fa-robot"></i>
-            </div>
-
-            <div>
-                <p class="text-xs text-gray-500">Powered By</p>
-                <p class="font-bold text-gray-900">Gemini AI + GAS</p>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
 
 
 
             <!-- TEXT -->
-            <div class="order-1 lg:order-2">
+            <div class="order-1 lg:order-2 lg:max-w-xl">
 
                 <span class="inline-flex px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-bold mb-5">
                     KEUNGGULAN GASDIGITAL
                 </span>
 
 
-                <h2 class="text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight">
+                <h2 class="text-3xl font-extrabold leading-tight text-gray-900 sm:text-4xl xl:text-5xl">
 
                     Bangun Web App Modern
                     <span class="text-blue-600">
@@ -1224,7 +1445,7 @@
                 </h2>
 
 
-                <p class="mt-6 text-lg text-gray-600 leading-relaxed">
+                <p class="mt-5 text-base leading-relaxed text-gray-600 xl:text-lg">
 
                     GasDigital memanfaatkan teknologi
                     Google Apps Script, Gemini AI, Blogger,
@@ -1235,7 +1456,7 @@
 
 
 
-                <div class="mt-8 space-y-5">
+                <div class="mt-7 space-y-4">
 
 
                     <div class="flex gap-4">
@@ -1427,122 +1648,7 @@
                                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Koleksi Aplikasi Terbaru</h2>
                                 <p class="text-gray-600 text-lg">Berbagai karya aplikasi inovatif yang telah dirilis.</p>
                             </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <!-- Card 1 -->
-                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
-                                    <div class="relative overflow-hidden h-56">
-                                        <div class="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
-                                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiEmn1lxsEc-9iUuD7cM0Dgja2prAxuN_TInUgrtAIXACRd16QuLVQlhLaQpH5I65ZNvShy6vyIS9iH4GV0cv0Kqbcshc0vxHKcAJwcW213o5cUNZJcfUgt2uJvnW1F1FaM48d1_EHAxImCi6uuqQtTTVqjLqe5LGSCZpYxOImcTtjfnCBKwnwggGkU2qa-/s320/selamat%20datang%20pakar%20web.webp" alt="esa Digital & Sentra UMKM" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
-                                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-blue-600 shadow-sm z-20">
-                                            Pemerintahan
-                                        </div>
-                                    </div>
-                                    <div class="p-6 flex-1 flex flex-col" >
-                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Desa Digital & Sentra UMKM</h3>
-                                        <p class="text-gray-600 text-sm mb-6 line-clamp-2">Platform digital untuk mengembangkan usaha kecil dan menengah dengan berbagai layanan dan dukungan.</p>
-                                        <a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgNvw-rTZvsSWC3LPxgokEe4_Qq8xK2eVboFp5nzMs065TxoxL9EQGteQBKdro_cXnU6CXScUw2GmAgWEWajl7Xug2YthSIPz559Z6mYtvZBYOMUB8npznCn3ZxSblsQqq13SwZXkZU9XrlsAoua-sPi8-6ItvNgdsCfmR3Jh9lnPQEaJTBX2XRTzDGVm_P/s320/Web%20taman%20agung.png" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-800 transition mt-auto" target="_blank" rel="noopener noreferrer">
-                                            Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Card 2 -->
-                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
-                                    <div class="relative overflow-hidden h-56">
-                                        <div class="absolute inset-0 bg-emerald-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
-                                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop" alt="Dashboard Penjualan POS" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
-                                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-emerald-600 shadow-sm z-20">
-                                            Keuangan
-                                        </div>
-                                    </div>
-                                    <div class="p-6 flex-1 flex flex-col">
-                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Dashboard Penjualan POS</h3>
-                                        <p class="text-gray-600 text-sm mb-6 line-clamp-2">Sistem point of sales dengan analitik dan grafik realtime untuk memonitor omset bisnis.</p>
-                                        <a href="https://pmjakak.blogspot.com/p/sim-penjualan-pos.html" class="inline-flex items-center text-emerald-600 font-semibold hover:text-emerald-800 transition mt-auto" target="_blank" rel="noopener noreferrer">
-                                            Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Card 3 -->
-                                <div class="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
-                                    <div class="relative overflow-hidden h-56">
-                                        <div class="absolute inset-0 bg-purple-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
-                                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=600&auto=format&fit=crop" alt="Aplikasi SPMB Online" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
-                                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-purple-600 shadow-sm z-20">
-                                            Pendaftaran
-                                        </div>
-                                    </div>
-                                    <div class="p-6 flex-1 flex flex-col">
-                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Aplikasi SPMB Online</h3>
-                                        <p class="text-gray-600 text-sm mb-6 line-clamp-2">Platform penerimaan siswa baru secara online, dilengkapi fitur upload berkas dan seleksi otomatis.</p>
-                                        <a href="https://pmjakak.blogspot.com/p/sim-spmb-sekolah.html" class="inline-flex items-center text-purple-600 font-semibold hover:text-purple-800 transition mt-auto" target="_blank" rel="noopener noreferrer">
-                                            Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Card 4 (Extra) -->
-                                <div class="portofolio-extra hidden bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
-                                    <div class="relative overflow-hidden h-56">
-                                        <div class="absolute inset-0 bg-amber-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
-                                        <img src="https://images.unsplash.com/photo-1554147090-e1221a04a025?q=80&w=600&auto=format&fit=crop" alt="Aplikasi Absensi Online" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
-                                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-amber-600 shadow-sm z-20">
-                                            Produktivitas
-                                        </div>
-                                    </div>
-                                    <div class="p-6 flex-1 flex flex-col">
-                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Aplikasi Absensi Online</h3>
-                                        <p class="text-gray-600 text-sm mb-6 line-clamp-2">Sistem tracking kehadiran secara mandiri dengan fitur geolokasi dan integrasi langsung ke spreadsheet HRD.</p>
-                                        <a href="https://pmjakak.blogspot.com/p/e-absen-wajah.html" class="inline-flex items-center text-amber-600 font-semibold hover:text-amber-800 transition mt-auto" target="_blank" rel="noopener noreferrer">
-                                            Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Card 5 (Extra) -->
-                                <div class="portofolio-extra hidden bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
-                                    <div class="relative overflow-hidden h-56">
-                                        <div class="absolute inset-0 bg-rose-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
-                                        <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=600&auto=format&fit=crop" alt="Aplikasi E-Learning" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
-                                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-rose-600 shadow-sm z-20">
-                                            Pembelajaran
-                                        </div>
-                                    </div>
-                                    <div class="p-6 flex-1 flex flex-col">
-                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Aplikasi E-Learning</h3>
-                                        <p class="text-gray-600 text-sm mb-6 line-clamp-2">Platform belajar digital untuk menyajikan materi video, kuis interaktif, dan tracking progres siswa secara realtime.</p>
-                                        <a href="https://e-learning-hazel-theta.vercel.app/" class="inline-flex items-center text-rose-600 font-semibold hover:text-rose-800 transition mt-auto" target="_blank" rel="noopener noreferrer">
-                                            Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Card 6 (Extra) -->
-                                <div class="portofolio-extra hidden bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 group flex flex-col">
-                                    <div class="relative overflow-hidden h-56">
-                                        <div class="absolute inset-0 bg-cyan-600 opacity-0 group-hover:opacity-10 transition duration-300 z-10"></div>
-                                        <img src="https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?q=80&w=600&auto=format&fit=crop" alt="Aplikasi Tabungan Anak TK" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">
-                                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-xs font-bold text-cyan-600 shadow-sm z-20">
-                                            Sekolah
-                                        </div>
-                                    </div>
-                                    <div class="p-6 flex-1 flex flex-col">
-                                        <h3 class="text-xl font-bold text-gray-900 mb-2">Aplikasi Tabungan Anak TK</h3>
-                                        <p class="text-gray-600 text-sm mb-6 line-clamp-2">Sistem pencatatan tabungan harian siswa TK yang simpel, akurat, dan mudah digunakan oleh guru atau admin sekolah.</p>
-                                        <a href="https://pmjakak.blogspot.com/p/aplikasi-tabungan-anak-tk.html" class="inline-flex items-center text-cyan-600 font-semibold hover:text-cyan-800 transition mt-auto" target="_blank" rel="noopener noreferrer">
-                                            Selengkapnya <i class="fas fa-arrow-right ml-2 text-sm"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="text-center mt-12">
-                                <button onclick="document.querySelectorAll('.portofolio-extra').forEach(el => el.classList.remove('hidden')); this.classList.add('hidden');" class="inline-flex items-center justify-center px-8 py-3 border border-slate-300 shadow-sm text-base font-bold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition cursor-pointer">
-                                    Lihat Semua Portofolio
-                                </button>
-                            </div>
+                            ${renderPortfolioSectionHtml()}
                         </div>
                     </section>
 
@@ -1602,7 +1708,93 @@
                         </div>
                     </section>
 
-                    <!-- 4. SECTION ARTIKEL -->
+                    <!-- 4. SECTION KONTAK -->
+                    <section id="contact" class="py-24 border-b border-slate-200 bg-slate-50">
+                        <div class="section-shell">
+                            <div class="grid items-stretch gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+                                <div class="rounded-lg bg-slate-950 p-8 text-white shadow-xl shadow-slate-900/10 md:p-10">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-blue-500/15 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wider text-blue-200 ring-1 ring-blue-400/20">
+                                        <i class="fas fa-headset"></i> Kontak
+                                    </span>
+                                    <h2 class="mt-5 text-3xl font-extrabold tracking-tight md:text-4xl">Konsultasi Kebutuhan Aplikasi</h2>
+                                    <p class="mt-4 text-base leading-7 text-slate-300">Punya kebutuhan Web App, dashboard, automasi Google Sheets, atau sistem database ringan? Ceritakan kebutuhan Anda, nanti kami bantu arahkan solusi yang paling sesuai.</p>
+
+                                    <div class="mt-8 grid gap-4">
+                                        <a href="${CONTACT_WHATSAPP_GROUP_LINK}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 rounded-lg bg-emerald-500 px-5 py-3 text-sm font-extrabold text-white shadow-sm shadow-emerald-500/20 transition hover:bg-emerald-400">
+                                            <i class="fab fa-whatsapp text-lg"></i> Konsultasi via WhatsApp
+                                        </a>
+                                        <div class="grid gap-3 text-sm text-slate-200">
+                                            <div class="flex items-start gap-3">
+                                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/10 text-emerald-300"><i class="fab fa-whatsapp"></i></span>
+                                                <div>
+                                                    <p class="font-extrabold text-white">WhatsApp</p>
+                                                    <p class="text-slate-300">${CONTACT_WHATSAPP_DISPLAY}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/10 text-blue-300"><i class="fas fa-envelope"></i></span>
+                                                <div>
+                                                    <p class="font-extrabold text-white">Email</p>
+                                                    <p class="text-slate-300">${CONTACT_EMAIL}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/10 text-amber-300"><i class="fas fa-location-dot"></i></span>
+                                                <div>
+                                                    <p class="font-extrabold text-white">Area Layanan</p>
+                                                    <p class="text-slate-300">${CONTACT_LOCATION}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/10 text-purple-300"><i class="fas fa-clock"></i></span>
+                                                <div>
+                                                    <p class="font-extrabold text-white">Jam Respon</p>
+                                                    <p class="text-slate-300">${CONTACT_HOURS}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form onsubmit="submitContactForm(event)" class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+                                    <div class="mb-6">
+                                        <h3 class="text-2xl font-extrabold text-slate-950">Ceritakan kebutuhan Anda</h3>
+                                        <p class="mt-2 text-sm leading-6 text-slate-500">Gratis konsultasi awal. Estimasi biaya menyesuaikan fitur dan kompleksitas aplikasi.</p>
+                                    </div>
+                                    <div class="grid gap-4 sm:grid-cols-2">
+                                        <label class="grid gap-2 text-sm font-bold text-slate-700">
+                                            Nama
+                                            <input name="contact_name" type="text" placeholder="Nama Anda" class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100">
+                                        </label>
+                                        <label class="grid gap-2 text-sm font-bold text-slate-700">
+                                            WhatsApp
+                                            <input name="contact_phone" type="tel" placeholder="08xxxxxxxxxx" class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100">
+                                        </label>
+                                        <label class="grid gap-2 text-sm font-bold text-slate-700 sm:col-span-2">
+                                            Jenis Kebutuhan
+                                            <select name="contact_need" class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100">
+                                                <option value="">Pilih kebutuhan</option>
+                                                <option>Web App</option>
+                                                <option>Dashboard</option>
+                                                <option>Automasi Google Sheets</option>
+                                                <option>Database</option>
+                                                <option>Custom Sistem</option>
+                                            </select>
+                                        </label>
+                                        <label class="grid gap-2 text-sm font-bold text-slate-700 sm:col-span-2">
+                                            Pesan Singkat
+                                            <textarea name="contact_message" rows="5" placeholder="Contoh: Saya butuh aplikasi absensi online untuk sekolah..." class="resize-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100"></textarea>
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-lg bg-blue-600 px-5 py-3 text-sm font-extrabold text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700">
+                                        <i class="fas fa-paper-plane"></i> Kirim Konsultasi
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 5. SECTION ARTIKEL -->
                     <section id="articles" class="py-24 border-b border-slate-200 bg-slate-50">
                         <div class="section-shell">
                             <div class="flex justify-between items-end mb-12">
@@ -1644,7 +1836,7 @@
                         </div>
                     </section>
 
-                    <!-- 5. SECTION FAQ DINAMIS -->
+                    <!-- 6. SECTION FAQ DINAMIS -->
                     <section id="faq" class="relative overflow-hidden bg-gradient-to-b from-violet-50/70 via-slate-50 to-white py-16 md:py-20">
                         <div class="pointer-events-none absolute -left-20 top-12 h-48 w-48 rounded-full bg-violet-200/30 blur-3xl"></div>
                         <div class="pointer-events-none absolute -right-16 bottom-10 h-56 w-56 rounded-full bg-blue-200/30 blur-3xl"></div>
