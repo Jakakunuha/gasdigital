@@ -2386,6 +2386,12 @@
           appData = { ...appData, ...data.data };
           // PERBAIKAN: Selalu renderApp() setelah fetch selesai, entah itu public/dashboard
           renderApp();
+        } else if (data.sessionExpired) {
+          // Sesi login sudah berakhir di server tapi localStorage masih menyimpan login lama.
+          // Logout otomatis dan minta login ulang, daripada diam-diam tampil data publik.
+          handleLogout();
+          showToast("Sesi login Anda telah berakhir. Silakan login ulang.", "info");
+          return;
         } else {
           throw new Error(
             data.message || "Server tidak mengembalikan status success",
