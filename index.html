@@ -631,7 +631,7 @@
     const dashboardMenus = [
       { id: "dash_home", icon: "fa-chart-pie", label: "Dashboard" },
       { id: "courses", icon: "fa-video", label: "Courses" },
-      { id: "live", icon: "fa-satellite-dish", label: "Live" },
+      { id: "live", icon: "fa-satellite-dish", label: "Tutorial" },
       { id: "tools", icon: "fa-wrench", label: "Tools" },
       { id: "templates", icon: "fa-file-code", label: "Templates" },
       { id: "market", icon: "fa-store", label: "Market" },
@@ -654,6 +654,7 @@
           type: "text",
         },
         { key: "meeting_link", label: "Link Zoom/GMeet", type: "text" },
+        { key: "icon_url", label: "Upload Icon", type: "image" },
       ],
       tools: [
         { key: "tool_name", label: "Nama Tool", type: "text" },
@@ -1914,7 +1915,7 @@
 
       const pageLabels = {
         courses: "Courses",
-        live: "Live Session",
+        live: "Session Tutorial",
         tools: "Tools",
         templates: "Templates",
         market: "Market",
